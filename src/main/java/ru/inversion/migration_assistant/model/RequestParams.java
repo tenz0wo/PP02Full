@@ -1,9 +1,13 @@
-package ru.inversion.model;
+package ru.inversion.migration_assistant.model;
 
 import lombok.Data;
 
 @Data
 public class RequestParams {
+    String url;
+    String user;
+    String password;
+
     String i_prefix;
     String i_schema_name;
     String i_table_tablespace;

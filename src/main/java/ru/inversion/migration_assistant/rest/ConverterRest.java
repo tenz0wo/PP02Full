@@ -1,16 +1,17 @@
-package ru.inversion.rest;
+package ru.inversion.migration_assistant.rest;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.inversion.model.ResponseObj;
-import ru.inversion.model.RequestParams;
-import ru.inversion.service.ConverterService;
+import ru.inversion.migration_assistant.model.TablesDto;
+import ru.inversion.migration_assistant.service.ConverterService;
+import ru.inversion.migration_assistant.model.ResponseObj;
+import ru.inversion.migration_assistant.model.RequestParams;
 
-import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 @RestController
@@ -23,17 +24,24 @@ public class ConverterRest{
         this.converterService = converterService;
     }
 
-    @PostMapping(path = "oracle/convert")
+    @PostMapping(path = "migration/convert")
     @ResponseBody
     public ResponseEntity<?> getConvert(@RequestBody RequestParams request) throws SQLException{
-        ResponseObj response = converterService.getConvert(request);
+        ResponseObj<Integer> response = converterService.getConvert(request);
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping(path = "oracle/convert/ui")
+    @PostMapping(path = "migration/convert/ui")
     @ResponseBody
     public ResponseEntity<?> getConvertUi(@RequestBody RequestParams request) throws SQLException{
-        ResponseObj response = converterService.getConvertUi(request);
+        ResponseObj<TablesDto> response = converterService.getConvertUi(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping(path = "migration/table-list")
+    @ResponseBody
+    public ResponseEntity<?> getTableList(@RequestBody RequestParams request) throws SQLException{
+        List<String> response = converterService.getTableList(request).getResult();
         return ResponseEntity.ok(response);
     }
 }
