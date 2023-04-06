@@ -44,4 +44,13 @@ public class ConverterRest{
         List<String> response = converterService.getTableList(request).getResult();
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping(path = "migration/schema-list")
+    @ResponseBody
+    public ResponseEntity<?> getSchemaList(@RequestBody RequestParams request) throws SQLException{
+        List<String> response = converterService.getSchemaList(request).getResult();
+        return ResponseEntity.ok(response);
+    }
+
+
 }

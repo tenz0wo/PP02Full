@@ -80,5 +80,10 @@ public class ConverterService {
         return converterRepository.getTableList(params);
     }
 
+    public ResponseObj<List<String>> getSchemaList(RequestParams params) throws SQLException{
+        return converterRepository.getSchemaList(params);
+    }
+
+
 
 }
