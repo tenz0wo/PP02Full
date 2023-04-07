@@ -57,57 +57,63 @@ public class ConverterRepository{
     }
 
     public ResponseObj<List<String>> getTableList(RequestParams params) throws SQLException{
-        List<String> resp = new LinkedList<>();
-        if (!params.getUrl().contains("oracle")) {
-            return new ResponseObj<>(resp);
-        }
-        Connection connection = prepareConnection(params);
-        Statement statement = connection.createStatement();
-        prePopulateParams(params);
-
-        String query = "SELECT DISTINCT OBJECT_NAME \n" +
-                       "  FROM DBA_OBJECTS \n" +
-                       " WHERE OBJECT_TYPE = 'TABLE' \n" +
-                       "   AND ('" + params.getI_prefix() +"' is null OR UPPER(object_name) LIKE '" + params.getI_prefix().toUpperCase() + "%') \n" +
-                       "   AND ('" + params.getI_schema_name() + "' is null OR UPPER(owner) LIKE '" + params.getI_schema_name().toUpperCase() + "%') \n" +
-                       " order by UPPER(OBJECT_NAME), LENGTH(UPPER(OBJECT_NAME)) \n" +
-                       " FETCH FIRST 50 ROWS ONLY";
-
-        System.out.println(query);
-
-        ResultSet resultSet = statement.executeQuery(query);
-        while (resultSet.next()) {
-            resp.add(resultSet.getString("OBJECT_NAME"));
-        }
-
-        return new ResponseObj<>(resp);
+        return getObjectList(params, "TABLE");
     }
 
+    public ResponseObj<List<String>> getTableSchemaList(RequestParams params) throws SQLException{
+        return getObjectSchemaList(params, "TABLE");
+    }
 
-    public ResponseObj<List<String>> getSchemaList(RequestParams params) throws SQLException{
+    public ResponseObj<List<String>> getPackageList(RequestParams params) throws SQLException {
+        return getObjectList(params, "PACKAGE");
+    }
+
+    public ResponseObj<List<String>> getPackageSchemaList(RequestParams params) throws SQLException {
+        return getObjectSchemaList(params, "PACKAGE");
+    }
+
+    public ResponseObj<List<String>> getObjectList(RequestParams params, String objectType) throws SQLException {
+        prePopulateParams(params);
+        String query =  "SELECT DISTINCT OBJECT_NAME \n" +
+                        "  FROM DBA_OBJECTS \n" +
+                        " WHERE OBJECT_TYPE = '" + objectType + "' \n" +
+                        "   AND ('" + params.getI_prefix() +"' IS NULL OR UPPER (object_name) LIKE '" + params.getI_prefix().toUpperCase() + "%') \n" +
+                        "   AND ('" + params.getI_schema_name() + "' IS NULL OR UPPER (owner) LIKE '" + params.getI_schema_name().toUpperCase() + "%') \n" +
+                        " ORDER BY UPPER (OBJECT_NAME), LENGTH (UPPER (OBJECT_NAME)) \n" +
+                        " FETCH FIRST 50 ROWS ONLY";
+        List<String> columns = List.of("OBJECT_NAME");
+        return getResponseSimpleList (params, query, columns);
+    }
+
+    public ResponseObj<List<String>> getObjectSchemaList(RequestParams params, String objectType) throws SQLException {
+        prePopulateParams(params);
+        String query =  "SELECT OWNER\n" +
+                        "  FROM (SELECT OWNER, count(*) cnt\n" +
+                        "          FROM dba_objects\n" +
+                        "         WHERE object_type = '" + objectType + "'\n" +
+                        "           AND ('" + params.getI_prefix() +"' IS NULL OR UPPER (object_name) LIKE '" + params.getI_prefix().toUpperCase() + "%') \n" +
+                        "           AND ('" + params.getI_schema_name() + "' IS NULL OR UPPER (owner) LIKE '" + params.getI_schema_name().toUpperCase() + "%') \n" +
+                        "         GROUP BY owner)\n" +
+                        " ORDER BY cnt DESC \n" +
+                        " FETCH FIRST 50 ROWS ONLY";
+        List<String> columns = List.of("OWNER");
+        return getResponseSimpleList (params, query, columns);
+    }
+
+    private ResponseObj<List<String>> getResponseSimpleList (RequestParams params, String query, List<String> columns) throws SQLException {
         List<String> resp = new LinkedList<>();
         if (!params.getUrl().contains("oracle")) {
             return new ResponseObj<>(resp);
         }
+
         Connection connection = prepareConnection(params);
         Statement statement = connection.createStatement();
-
-        prePopulateParams(params);
-
-        String query = "select OWNER\n" +
-                "  from (select OWNER, count(*) cnt\n" +
-                "          from dba_objects\n" +
-                "         where object_type = 'TABLE'\n" +
-                "           AND ('" + params.getI_prefix() +"' is null OR UPPER(object_name) LIKE '" + params.getI_prefix().toUpperCase() + "%') \n" +
-                "           AND ('" + params.getI_schema_name() + "' is null OR UPPER(owner) LIKE '" + params.getI_schema_name().toUpperCase() + "%') \n" +
-                "         group by owner)\n" +
-                " order by cnt desc FETCH FIRST 50 ROWS ONLY";
-
-        System.out.println(query);
-
         ResultSet resultSet = statement.executeQuery(query);
+
         while (resultSet.next()) {
-            resp.add(resultSet.getString("OWNER"));
+            for (String colLabel: columns) {
+                resp.add(resultSet.getString(colLabel));
+            }
         }
 
         return new ResponseObj<>(resp);

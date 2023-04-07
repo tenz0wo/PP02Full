@@ -45,12 +45,25 @@ public class ConverterRest{
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping(path = "migration/schema-list")
+    @PostMapping(path = "migration/table-schema-list")
     @ResponseBody
-    public ResponseEntity<?> getSchemaList(@RequestBody RequestParams request) throws SQLException{
-        List<String> response = converterService.getSchemaList(request).getResult();
+    public ResponseEntity<?> getTableSchemaList(@RequestBody RequestParams request) throws SQLException{
+        List<String> response = converterService.getTableSchemaList(request).getResult();
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping(path = "migration/package-list")
+    @ResponseBody
+    public ResponseEntity<?> getPackageList(@RequestBody RequestParams request) throws SQLException{
+        List<String> response = converterService.getPackageList(request).getResult();
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping(path = "migration/package-schema-list")
+    @ResponseBody
+    public ResponseEntity<?> getPackageSchemaList(@RequestBody RequestParams request) throws SQLException{
+        List<String> response = converterService.getPackageSchemaList(request).getResult();
+        return ResponseEntity.ok(response);
+    }
 
 }
