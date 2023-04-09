@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.inversion.migration_assistant.model.DbObjectWithSchema;
 import ru.inversion.migration_assistant.model.TablesDto;
 import ru.inversion.migration_assistant.service.ConverterService;
 import ru.inversion.migration_assistant.model.ResponseObj;
@@ -59,10 +60,18 @@ public class ConverterRest{
         return ResponseEntity.ok(response);
     }
 
+
     @PostMapping(path = "migration/package-schema-list")
     @ResponseBody
     public ResponseEntity<?> getPackageSchemaList(@RequestBody RequestParams request) throws SQLException{
         List<String> response = converterService.getPackageSchemaList(request).getResult();
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping(path = "migration/tables-by-package")
+    @ResponseBody
+    public ResponseEntity<List<DbObjectWithSchema>> getTablesByPackage(@RequestBody RequestParams request) throws SQLException {
+        List<DbObjectWithSchema> response = converterService.getTablesByPackage(request).getResult();
         return ResponseEntity.ok(response);
     }
 

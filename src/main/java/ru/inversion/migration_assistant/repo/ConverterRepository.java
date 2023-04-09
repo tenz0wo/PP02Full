@@ -3,11 +3,11 @@ package ru.inversion.migration_assistant.repo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import ru.inversion.migration_assistant.model.DbObjectWithSchema;
 import ru.inversion.migration_assistant.model.RequestParams;
 import ru.inversion.migration_assistant.model.ResponseObj;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -81,8 +81,8 @@ public class ConverterRepository{
                         "   AND ('" + params.getI_schema_name() + "' IS NULL OR UPPER (owner) LIKE '" + params.getI_schema_name().toUpperCase() + "%') \n" +
                         " ORDER BY UPPER (OBJECT_NAME), LENGTH (UPPER (OBJECT_NAME)) \n" +
                         " FETCH FIRST 50 ROWS ONLY";
-        List<String> columns = List.of("OBJECT_NAME");
-        return getResponseSimpleList (params, query, columns);
+        String column = "OBJECT_NAME";
+        return getResponseSimpleList (params, query, column);
     }
 
     public ResponseObj<List<String>> getObjectSchemaList(RequestParams params, String objectType) throws SQLException {
@@ -96,11 +96,11 @@ public class ConverterRepository{
                         "         GROUP BY owner)\n" +
                         " ORDER BY cnt DESC \n" +
                         " FETCH FIRST 50 ROWS ONLY";
-        List<String> columns = List.of("OWNER");
-        return getResponseSimpleList (params, query, columns);
+        String column = "OWNER";
+        return getResponseSimpleList (params, query, column);
     }
 
-    private ResponseObj<List<String>> getResponseSimpleList (RequestParams params, String query, List<String> columns) throws SQLException {
+    private ResponseObj<List<String>> getResponseSimpleList (RequestParams params, String query, String column) throws SQLException {
         List<String> resp = new LinkedList<>();
         if (!params.getUrl().contains("oracle")) {
             return new ResponseObj<>(resp);
@@ -111,9 +111,27 @@ public class ConverterRepository{
         ResultSet resultSet = statement.executeQuery(query);
 
         while (resultSet.next()) {
-            for (String colLabel: columns) {
-                resp.add(resultSet.getString(colLabel));
-            }
+            resp.add(resultSet.getString(column));
+        }
+
+        return new ResponseObj<>(resp);
+    }
+
+    private ResponseObj<List<DbObjectWithSchema>> getResponseOfObjWithSchema (RequestParams params, String query, DbObjectWithSchema columns) throws SQLException {
+        List<DbObjectWithSchema> resp = new LinkedList<>();
+        if (!params.getUrl().contains("oracle")) {
+            return new ResponseObj<>(resp);
+        }
+
+        Connection connection = prepareConnection(params);
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+
+        while (resultSet.next()) {
+            DbObjectWithSchema obj = new DbObjectWithSchema ();
+            obj.setObj(resultSet.getString(columns.getObj()));
+            obj.setSchema(resultSet.getString(columns.getSchema()));
+            resp.add(obj);
         }
 
         return new ResponseObj<>(resp);
@@ -126,6 +144,66 @@ public class ConverterRepository{
         if (StringUtils.isBlank(params.getI_schema_name())) {
             params.setI_schema_name("");
         }
+    }
+
+//---
+//
+//
+
+    public ResponseObj<List<DbObjectWithSchema>> getTablesByPackage(RequestParams params) throws SQLException {
+        prePopulateParams(params);
+        String query =
+                "with mytabs as (\n" +
+                "                select tname, owner \n" +
+                "                  from (\n" +
+                "                       --прямая зависимость кода от таблиц\n" +
+                "                       select d.referenced_name tname, d.owner\n" +
+                "                         from dba_dependencies d\n" +
+                "                        where d.owner = 'INVOPRO'\n" +
+                "                          and d.referenced_owner = d.owner\n" +
+                "                          and d.name in ('" + params.getI_prefix() + "') --пакеты для конвертации !!!\n" +
+                "                          and d.referenced_type='TABLE'\n" +
+                "                       union\n" +
+                "                       --зависимость кода от таблиц через представления\n" +
+                "                       select d.referenced_name tname, d.owner\n" +
+                "                         from dba_dependencies d\n" +
+                "                     where d.owner= '" + params.getI_schema_name() + "'\n" +
+                "                       and d.referenced_owner = d.owner\n" +
+                "                       and d.type='VIEW'\n" +
+                "                       and (d.name, d.owner) in (select distinct d.referenced_name tname, d.owner\n" +
+                "                                                   from dba_dependencies d\n" +
+                "                                                  where d.owner = '" + params.getI_schema_name() + "'\n" +
+                "                                                    and d.referenced_owner = d.owner\n" +
+                "                                                    and d.name in ('" + params.getI_prefix() + "') --пакеты для конвертации !!!\n" +
+                "                                                    and d.referenced_type='VIEW') --view\n" +
+                "                       and d.referenced_type='TABLE'\n" +
+                "                    ) --where tname not in ('USR','smr','cus','acc','ACC_DST') --ранее перенесенные таблицы\n" +
+                "                  --where tname not in (SELECT cname FROM ORA2PG_EXP_TABLES WHERE CSHEMA='XXI' /*AND dconv<to_date('31.03.2023 00:00:00','DD.MM.RRRR HH24:MI:SS')*/)  --ранее перенесенные таблицы\n" +
+                "               ),\n" +
+                "      myrel as (\n" +
+                "                select * " +
+                "                  from (select distinct c.table_name t_child, c.owner, \n" +
+                "                               (select c2.TABLE_NAME from dba_constraints c2 \n" +
+                "                                 where c2.owner = '" + params.getI_schema_name() + "'\n" +
+                "                                   and c2.CONSTRAINT_TYPE IN ('P','U')\n" +
+                "                                   and c2.CONSTRAINT_NAME=c.R_CONSTRAINT_NAME) t_main\n" +
+                "                          from dba_constraints c\n" +
+                "                         where c.owner = '\" + params.getI_schema_name() + \"INVOPRO'\n" +
+                "                           and c.R_owner = c.owner\n" +
+                "                           and c.CONSTRAINT_TYPE = 'R')\n" +
+                "                 where t_child!=t_main \n" +
+                "                   and t_main in (select tname from mytabs)\n" +
+                "               )\n" +
+                "select TNAME, OWNER, \n" +
+                "       (select NVL(max(level),0)\n" +
+                "          from myrel\n" +
+                "         start with myrel.t_child=tname\n" +
+                "       connect by nocycle prior myrel.t_main = myrel.t_child\n" +
+                "       ) IREL --\"глубина\" зависимостей в рамках выгружаемых для правильного порядка применения\n" +
+                "  from mytabs\n" +
+                " order by 2,1";
+        DbObjectWithSchema columns = new DbObjectWithSchema("TNAME", "OWNER");
+        return getResponseOfObjWithSchema (params, query, columns);
     }
 
 }

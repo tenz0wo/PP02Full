@@ -2,10 +2,7 @@ package ru.inversion.migration_assistant.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.inversion.migration_assistant.model.RequestParams;
-import ru.inversion.migration_assistant.model.ResponseObj;
-import ru.inversion.migration_assistant.model.TableDto;
-import ru.inversion.migration_assistant.model.TablesDto;
+import ru.inversion.migration_assistant.model.*;
 import ru.inversion.priv.tools.dcont.DCont;
 import ru.inversion.priv.tools.mdom.MDom;
 import ru.inversion.migration_assistant.repo.ConverterRepository;
@@ -90,6 +87,10 @@ public class ConverterService {
 
     public ResponseObj<List<String>> getPackageSchemaList(RequestParams params) throws SQLException{
         return converterRepository.getPackageSchemaList(params);
+    }
+
+    public ResponseObj<List<DbObjectWithSchema>> getTablesByPackage(RequestParams params) throws SQLException {
+        return converterRepository.getTablesByPackage(params);
     }
 
 
