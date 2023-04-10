@@ -15,7 +15,7 @@ import java.util.List;
 @Slf4j
 public class ConverterRepository{
 
-    public ResponseObj<Integer> getConvert(RequestParams params) throws SQLException{
+    public Integer getConvert(RequestParams params) throws SQLException{
         Connection connection = prepareConnection(params);
 
         //передача параметров в оракл для получения id
@@ -29,12 +29,15 @@ public class ConverterRepository{
 //        callableStatement.setString(5, params.getI_index_tablespace());
 //        callableStatement.setString(6, params.getI_dbms());
         callableStatement.execute();
-        Integer resp = callableStatement.getInt(1);
+        connection.close();
 
-        return new ResponseObj<>(resp);
+        Integer res = callableStatement.getInt(1);
+        connection.close();
+
+        return res;
     }
 
-    public ResponseObj<String> getConvertUi(RequestParams params) throws SQLException{
+    public String getConvertUi(RequestParams params) throws SQLException{
         Connection connection = prepareConnection(params);
 
         //передача параметров в оракл для получения id
@@ -47,9 +50,10 @@ public class ConverterRepository{
 //        callableStatement.setString(5, params.getI_index_tablespace());
 //        callableStatement.setString(6, params.getI_dbms());
         callableStatement.execute();
-        String resp = callableStatement.getString(1);
+        String res = callableStatement.getString(1);
+        connection.close();
 
-        return new ResponseObj<>(resp);
+        return res;
     }
 
     Connection prepareConnection (RequestParams params) throws SQLException {
@@ -114,6 +118,7 @@ public class ConverterRepository{
             resp.add(resultSet.getString(column));
         }
 
+        connection.close();
         return new ResponseObj<>(resp);
     }
 
@@ -134,6 +139,7 @@ public class ConverterRepository{
             resp.add(obj);
         }
 
+        connection.close();
         return new ResponseObj<>(resp);
     }
 

@@ -34,8 +34,8 @@ public class ConverterRest{
 
     @PostMapping(path = "migration/convert/ui")
     @ResponseBody
-    public ResponseEntity<?> getConvertUi(@RequestBody RequestParams request) throws SQLException{
-        ResponseObj<TablesDto> response = converterService.getConvertUi(request);
+    public ResponseEntity<?> getConvertUi(@RequestBody RequestParams[] request) throws SQLException{
+        ResponseObj<List<TablesDto>> response = converterService.getConvertUi(request);
         return ResponseEntity.ok(response);
     }
 

@@ -1,5 +1,6 @@
 package ru.inversion.migration_assistant.service;
 
+import io.swagger.v3.oas.models.links.Link;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.inversion.migration_assistant.model.*;
@@ -8,6 +9,7 @@ import ru.inversion.priv.tools.mdom.MDom;
 import ru.inversion.migration_assistant.repo.ConverterRepository;
 
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -22,24 +24,36 @@ public class ConverterService {
     }
 
     public ResponseObj<Integer> getConvert(RequestParams params) throws SQLException{
-        return converterRepository.getConvert(params);
+        return new ResponseObj<>(converterRepository.getConvert(params));
     }
 
-    public ResponseObj<TablesDto> getConvertUi(RequestParams params) throws SQLException{
-//        try {
-            String ret = converterRepository.getConvertUi(params).getResult();
-//        } catch (Exception e){
-//            throw new ResourceNotFoundException("Product with id " + id + " not found"));
-//        }
+    public ResponseObj<List<TablesDto>> getConvertUi(RequestParams[] paramRows) throws SQLException {
+        List<TablesDto> tableRows = new LinkedList<>();
+        List.of(paramRows).forEach(requestParams -> {
+            addTableRow (requestParams, tableRows);
+        });
+        return new ResponseObj<>(tableRows);
+    }
 
-        System.out.println("xml");
-        System.out.println(ret);
-
-        DCont dc = new MDom();
-        dc.loadXml(ret);
-        TablesDto tables =  mapTables(dc);
-
-        return new ResponseObj<>(tables);
+    private void addTableRow (RequestParams params, List<TablesDto> tableRows) {
+        TablesDto tableRow = new TablesDto();
+        try {
+            String ret = converterRepository.getConvertUi(params);
+            System.out.println("ret");
+            System.out.println(ret);
+            DCont dc = new MDom();
+            dc.loadXml(ret);
+            tableRow = mapTables(dc);
+        } catch (SQLException ex) {
+            tableRow.getTable().setTableName(params.getI_prefix());
+            tableRow.getTable().setSchemaName(params.getI_schema_name());
+            tableRow.getTable().setDdlTabPg(ex.getMessage());
+            tableRow.getTable().setDdlTabFdw(ex.getMessage());
+            tableRow.getTable().setScript(ex.getMessage());
+            tableRow.getTable().setDdlConPg(ex.getMessage());
+        } finally {
+            tableRows.add(tableRow);
+        }
     }
 
     TablesDto mapTables(DCont dc) {
