@@ -38,11 +38,11 @@ public class ConverterRepository{
         Connection connection = prepareConnection(params);
 
         //передача параметров в оракл для получения id
-        CallableStatement callableStatement = connection.prepareCall("{? = call ora2pg_pkg.convert_ui(?, ?)}");
+        CallableStatement callableStatement = connection.prepareCall("{? = call ora2pg_pkg.convert_ui(?, ?, ?)}");
         callableStatement.registerOutParameter(1, Types.CLOB);
         callableStatement.setString(2, params.getI_prefix());
         callableStatement.setString(3, params.getI_schema_name());
-//        callableStatement.setString(3, params.getI_schema_name());
+        callableStatement.setString(4, params.getI_schema_name());
 //        callableStatement.setString(4, params.getI_table_tablespace());
 //        callableStatement.setString(5, params.getI_index_tablespace());
 //        callableStatement.setString(6, params.getI_dbms());
