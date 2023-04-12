@@ -3,9 +3,8 @@ package ru.inversion.migration_assistant.repo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import ru.inversion.migration_assistant.model.DbObjectWithSchema;
-import ru.inversion.migration_assistant.model.RequestParams;
-import ru.inversion.migration_assistant.model.ResponseObj;
+import ru.inversion.migration_assistant.db.Postgres;
+import ru.inversion.migration_assistant.model.*;
 
 import java.sql.*;
 import java.util.LinkedList;
@@ -210,6 +209,54 @@ public class ConverterRepository{
                 " order by 2,1";
         DbObjectWithSchema columns = new DbObjectWithSchema("TNAME", "OWNER");
         return getResponseOfObjWithSchema (params, query, columns);
+    }
+
+    private ResponseObj<ResponseCheckTable> getResponseCheckTable (RequestCheckTable params, String query) throws SQLException {
+        ResponseCheckTable responseCheckTable = new ResponseCheckTable();
+
+        String url = params.getUrl();
+        String username = params.getUser();
+        String password = params.getPassword();
+
+        Connection connection = null;
+        try {
+            connection = DriverManager.getConnection(url, username, password);
+        } catch (SQLException e) {
+            System.out.println("Ошибка подключения: " + e.getMessage());
+        }
+        assert connection != null;
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+
+        resultSet.next();
+        responseCheckTable.setTable(resultSet.getBoolean(2));
+        responseCheckTable.setTableRow(resultSet.getBoolean(1));
+
+        connection.close();
+        return new ResponseObj<>(responseCheckTable);
+    }
+
+    public ResponseObj<ResponseCheckTable> checkTable(RequestCheckTable params) throws SQLException {
+        String query = "SELECT \n" +
+                "  CASE \n" +
+                "    WHEN COUNT(*) > 0 THEN 1\n" +
+                "    ELSE 0 \n" +
+                "  END AS table_not_empty,\n" +
+                "  CASE \n" +
+                "    WHEN COUNT(*) > 0 THEN 1\n" +
+                "    ELSE 0\n" +
+                "  END AS table_exists\n" +
+                "FROM all_tables\n" +
+                "WHERE owner = '" + params.getSchema().toUpperCase() + "'\n" +
+                "  AND table_name = '" + params.getTable().toUpperCase() + "'\n" +
+                "  AND EXISTS (\n" +
+                "    SELECT 1 \n" +
+                "    FROM " + params.getTable().toUpperCase() + "\n" +
+                "    WHERE ROWNUM <= 1\n" +
+                "  );";
+
+
+        return getResponseCheckTable(params, query);
     }
 
 }

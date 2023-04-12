@@ -7,9 +7,7 @@ import java.util.List;
 
 @Data
 public class RequestPGScripts {
-    String host;
-    String port;
-    String dbName;
+    String url;
     String user;
     String password;
 

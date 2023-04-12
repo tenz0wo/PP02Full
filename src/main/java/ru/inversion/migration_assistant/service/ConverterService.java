@@ -113,4 +113,12 @@ public class ConverterService {
     public ResponseObj<List<ResponsePSQL>> executeSqlScript(RequestPGScripts params) throws SQLException {
         return postgresRepository.executeSqlScript(params);
     }
+
+    public ResponseObj<ResponseCheckTable> checkTable(RequestCheckTable params) throws SQLException {
+        if (params.getDriver() == "postgres"){
+            return postgresRepository.checkTable(params);
+        }else {
+            return converterRepository.checkTable(params);
+        }
+    }
 }

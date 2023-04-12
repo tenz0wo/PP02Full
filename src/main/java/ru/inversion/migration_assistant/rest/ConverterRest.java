@@ -79,4 +79,11 @@ public class ConverterRest{
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping(path = "migration/check-table")
+    @ResponseBody
+    public ResponseEntity<ResponseCheckTable> checkTable(@RequestBody RequestCheckTable request) throws SQLException {
+        ResponseCheckTable response = converterService.checkTable(request).getResult();
+        return ResponseEntity.ok(response);
+    }
+
 }
