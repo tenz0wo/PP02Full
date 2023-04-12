@@ -5,11 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.inversion.migration_assistant.model.DbObjectWithSchema;
-import ru.inversion.migration_assistant.model.TablesDto;
+import ru.inversion.migration_assistant.model.*;
 import ru.inversion.migration_assistant.service.ConverterService;
-import ru.inversion.migration_assistant.model.ResponseObj;
-import ru.inversion.migration_assistant.model.RequestParams;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -72,6 +69,13 @@ public class ConverterRest{
     @ResponseBody
     public ResponseEntity<List<DbObjectWithSchema>> getTablesByPackage(@RequestBody RequestParams request) throws SQLException {
         List<DbObjectWithSchema> response = converterService.getTablesByPackage(request).getResult();
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping(path = "execute-sql-script")
+    @ResponseBody
+    public ResponseEntity<List<ResponsePSQL>> executeSqlScript(@RequestBody RequestPGScripts request) throws SQLException {
+        List<ResponsePSQL> response = converterService.executeSqlScript(request).getResult();
         return ResponseEntity.ok(response);
     }
 

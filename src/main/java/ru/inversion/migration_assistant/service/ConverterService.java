@@ -7,6 +7,7 @@ import ru.inversion.migration_assistant.model.*;
 import ru.inversion.priv.tools.dcont.DCont;
 import ru.inversion.priv.tools.mdom.MDom;
 import ru.inversion.migration_assistant.repo.ConverterRepository;
+import ru.inversion.migration_assistant.repo.PostgresRepository;
 
 import java.sql.SQLException;
 import java.util.LinkedList;
@@ -17,10 +18,12 @@ import java.util.List;
 public class ConverterService {
 
     protected ConverterRepository converterRepository;
+    protected PostgresRepository postgresRepository;
 
     @Autowired
-    public ConverterService(ConverterRepository converterRepository) {
+    public ConverterService(ConverterRepository converterRepository, PostgresRepository postgresRepository) {
         this.converterRepository = converterRepository;
+        this.postgresRepository = postgresRepository;
     }
 
     public ResponseObj<Integer> getConvert(RequestParams params) throws SQLException{
@@ -107,6 +110,7 @@ public class ConverterService {
         return converterRepository.getTablesByPackage(params);
     }
 
-
-
+    public ResponseObj<List<ResponsePSQL>> executeSqlScript(RequestPGScripts params) throws SQLException {
+        return postgresRepository.executeSqlScript(params);
+    }
 }
