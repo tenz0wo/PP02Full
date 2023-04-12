@@ -1,4 +1,4 @@
-package ru.inversion.migration_assistant.model;
+package ru.inversion.migration_assistant.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

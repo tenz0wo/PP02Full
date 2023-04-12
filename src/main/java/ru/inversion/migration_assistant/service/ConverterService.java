@@ -1,125 +1,77 @@
 package ru.inversion.migration_assistant.service;
 
-import io.swagger.v3.oas.models.links.Link;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.inversion.migration_assistant.model.*;
-import ru.inversion.priv.tools.dcont.DCont;
-import ru.inversion.priv.tools.mdom.MDom;
-import ru.inversion.migration_assistant.repo.ConverterRepository;
-import ru.inversion.migration_assistant.repo.PostgresRepository;
+import ru.inversion.migration_assistant.model.common.ResponseObj;
+import ru.inversion.migration_assistant.model.request.*;
+import ru.inversion.migration_assistant.model.response.*;
+import ru.inversion.migration_assistant.util.ResultCode;
+import ru.inversion.migration_assistant.repo.SourceDBRepository;
+import ru.inversion.migration_assistant.repo.TargetDBRepository;
 
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 
 @Service
 public class ConverterService {
 
-    protected ConverterRepository converterRepository;
-    protected PostgresRepository postgresRepository;
+    protected SourceDBRepository sourceDBRepository;
+    protected TargetDBRepository targetDBRepository;
 
     @Autowired
-    public ConverterService(ConverterRepository converterRepository, PostgresRepository postgresRepository) {
-        this.converterRepository = converterRepository;
-        this.postgresRepository = postgresRepository;
-    }
-
-    public ResponseObj<Integer> getConvert(RequestParams params) throws SQLException{
-        return new ResponseObj<>(converterRepository.getConvert(params));
+    public ConverterService(SourceDBRepository sourceDBRepository, TargetDBRepository targetDBRepository) {
+        this.sourceDBRepository = sourceDBRepository;
+        this.targetDBRepository = targetDBRepository;
     }
 
     public ResponseObj<List<TablesDto>> getConvertUi(RequestParams[] paramRows) throws SQLException {
         List<TablesDto> tableRows = new LinkedList<>();
-        List.of(paramRows).forEach(requestParams -> {
-            addTableRow (requestParams, tableRows);
+        List.of(paramRows).forEach(singleTableParams -> {
+            ResponseObj<TablesDto> tableRowResponse = sourceDBRepository.getConvertUi(singleTableParams);
+            if (!tableRowResponse.getError().getCode().equals(ResultCode.OK.value())) {
+                ResponseObj<List<TablesDto>> response = new ResponseObj<>(tableRows);
+                TablesDto problemTableRow = new TablesDto();
+                TableDto problemTableRowWrapped = new TableDto();
+                problemTableRowWrapped.setTableName(singleTableParams.getI_prefix());
+                problemTableRowWrapped.setSchemaName(singleTableParams.getI_schema_name());
+                problemTableRow.setTable(problemTableRowWrapped);
+                response.getResult().add(problemTableRow);
+                response.getError().setCode(tableRowResponse.getError().getCode());
+                response.getError().setMessage(tableRowResponse.getError().getMessage());
+            }
+            tableRows.add(tableRowResponse.getResult());
         });
         return new ResponseObj<>(tableRows);
     }
 
-    private void addTableRow (RequestParams params, List<TablesDto> tableRows) {
-        TablesDto tableRow = new TablesDto();
-        try {
-            String ret = converterRepository.getConvertUi(params);
-            System.out.println("ret");
-            System.out.println(ret);
-            DCont dc = new MDom();
-            dc.loadXml(ret);
-            tableRow = mapTables(dc);
-        } catch (SQLException ex) {
-            tableRow.getTable().setTableName(params.getI_prefix());
-            tableRow.getTable().setSchemaName(params.getI_schema_name());
-            tableRow.getTable().setDdlTabPg(ex.getMessage());
-            tableRow.getTable().setDdlTabFdw(ex.getMessage());
-            tableRow.getTable().setScript(ex.getMessage());
-            tableRow.getTable().setDdlConPg(ex.getMessage());
-        } finally {
-            tableRows.add(tableRow);
-        }
-    }
-
-    TablesDto mapTables(DCont dc) {
-        TablesDto tables = new TablesDto();
-        tables.setVersion(dc.e("version").asStr());
-        tables.setPrefix(dc.e("prefix").asStr());
-
-        DCont dcTable = dc.e("table");
-        TableDto table = new TableDto();
-        table.setSchemaName(dcTable.e("shema_name").asStr());
-        table.setTableName(dcTable.e("table_name").asStr());
-        table.setDdlTabPg(dcTable.e("ddl_tab_pg").asStr());
-        table.setDdlConPg(dcTable.e("ddl_con_pg").asStr());
-        table.setDdlTabFdw(dcTable.e("ddl_tab_fdw").asStr());
-        table.setScript(dcTable.e("script").asStr());
-        tables.setTable(table);
-
-//        Ежели всё-таки будет массив
-//        for (DCont dcTable : dc.list("table")) {
-//            TableDto table = new TableDto();
-//            table.setSchemaName(dcTable.e("shema_name").asStr());
-//            table.setTableName(dcTable.e("table_name").asStr());
-//            table.setDdlTabPg(dcTable.e("ddl_tab_pg").asStr());
-//            table.setDdlConPg(dcTable.e("ddl_con_pg").asStr());
-//            table.setDdlTabFdw(dcTable.e("ddl_tab_fdw").asStr());
-//            table.setScript(dcTable.e("script").asStr());
-//            tables.getTables().add(table);
-//        }
-
-        return tables;
-    }
-
 
     public ResponseObj<List<String>> getTableList(RequestParams params) throws SQLException{
-        return converterRepository.getTableList(params);
+        return sourceDBRepository.getTableList(params);
     }
 
     public ResponseObj<List<String>> getTableSchemaList(RequestParams params) throws SQLException{
-        return converterRepository.getTableSchemaList(params);
+        return sourceDBRepository.getTableSchemaList(params);
     }
 
     public ResponseObj<List<String>> getPackageList(RequestParams params) throws SQLException{
-        return converterRepository.getPackageList(params);
+        return sourceDBRepository.getPackageList(params);
     }
 
     public ResponseObj<List<String>> getPackageSchemaList(RequestParams params) throws SQLException{
-        return converterRepository.getPackageSchemaList(params);
+        return sourceDBRepository.getPackageSchemaList(params);
     }
 
     public ResponseObj<List<DbObjectWithSchema>> getTablesByPackage(RequestParams params) throws SQLException {
-        return converterRepository.getTablesByPackage(params);
+        return sourceDBRepository.getTablesByPackage(params);
     }
 
-    public ResponseObj<List<ResponsePSQL>> executeSqlScript(RequestPGScripts params) throws SQLException {
-        return postgresRepository.executeSqlScript(params);
+    public ResponseObj<List<ResponseExecutableScripts>> executeSqlScript(RequestExecutableScripts params) throws SQLException {
+        return targetDBRepository.executeSqlScript(params);
     }
 
     public ResponseObj<ResponseCheckTable> checkTable(RequestCheckTable params) throws SQLException {
-        if (Objects.equals(params.getDriver(), "postgres")){
-            return postgresRepository.checkTable(params);
-        }else {
-            return converterRepository.checkTable(params);
-        }
+        return targetDBRepository.checkTable(params);
     }
 }

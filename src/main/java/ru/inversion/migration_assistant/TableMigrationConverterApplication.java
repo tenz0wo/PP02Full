@@ -19,8 +19,6 @@ import java.util.Arrays;
 @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
 public class TableMigrationConverterApplication {
     public static void main(String[] args) {
-
-        System.out.println("1 << 2 = " + String.valueOf(1 << 2));
         SpringApplication.run(TableMigrationConverterApplication.class, args);
     }
     @Bean
@@ -42,5 +40,4 @@ public class TableMigrationConverterApplication {
         urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
         return new CorsFilter(urlBasedCorsConfigurationSource);
     }
-
 }

@@ -5,7 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.inversion.migration_assistant.model.*;
+import ru.inversion.migration_assistant.model.common.ResponseObj;
+import ru.inversion.migration_assistant.model.request.RequestCheckTable;
+import ru.inversion.migration_assistant.model.request.RequestExecutableScripts;
+import ru.inversion.migration_assistant.model.request.RequestParams;
+import ru.inversion.migration_assistant.model.response.DbObjectWithSchema;
+import ru.inversion.migration_assistant.model.response.TablesDto;
 import ru.inversion.migration_assistant.service.ConverterService;
 
 import java.sql.SQLException;
@@ -20,13 +25,6 @@ public class ConverterRest{
     @Autowired
     public ConverterRest(ConverterService converterService) {
         this.converterService = converterService;
-    }
-
-    @PostMapping(path = "migration/convert")
-    @ResponseBody
-    public ResponseEntity<?> getConvert(@RequestBody RequestParams request) throws SQLException{
-        ResponseObj<Integer> response = converterService.getConvert(request);
-        return ResponseEntity.ok(response);
     }
 
     @PostMapping(path = "migration/convert/ui")
@@ -72,18 +70,16 @@ public class ConverterRest{
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping(path = "execute-sql-script")
+    @PostMapping(path = "migration/execute-sql-script")
     @ResponseBody
-    public ResponseEntity<List<ResponsePSQL>> executeSqlScript(@RequestBody RequestPGScripts request) throws SQLException {
-        List<ResponsePSQL> response = converterService.executeSqlScript(request).getResult();
-        return ResponseEntity.ok(response);
+    public ResponseEntity<?> executeSqlScript(@RequestBody RequestExecutableScripts request) throws SQLException {
+        return ResponseEntity.ok(converterService.executeSqlScript(request));
     }
 
     @PostMapping(path = "migration/check-table")
     @ResponseBody
-    public ResponseEntity<ResponseCheckTable> checkTable(@RequestBody RequestCheckTable request) throws SQLException {
-        ResponseCheckTable response = converterService.checkTable(request).getResult();
-        return ResponseEntity.ok(response);
+    public ResponseEntity<?> checkTable(@RequestBody RequestCheckTable request) throws SQLException {
+        return ResponseEntity.ok(converterService.checkTable(request));
     }
 
 }
