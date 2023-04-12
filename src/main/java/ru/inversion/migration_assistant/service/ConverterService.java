@@ -12,6 +12,7 @@ import ru.inversion.migration_assistant.repo.PostgresRepository;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Service
@@ -115,7 +116,7 @@ public class ConverterService {
     }
 
     public ResponseObj<ResponseCheckTable> checkTable(RequestCheckTable params) throws SQLException {
-        if (params.getDriver() == "postgres"){
+        if (Objects.equals(params.getDriver(), "postgres")){
             return postgresRepository.checkTable(params);
         }else {
             return converterRepository.checkTable(params);
