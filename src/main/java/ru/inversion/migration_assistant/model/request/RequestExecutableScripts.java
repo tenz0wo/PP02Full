@@ -15,6 +15,7 @@ public class RequestExecutableScripts extends DbConnectionParamsImpl {
         executableScripts.forEach(executableScript -> {
             RequestExecutableScript request = new RequestExecutableScript(this);
             request.setExecutableScript(executableScript);
+            requestExecutableScripts.add(request);
         });
         return requestExecutableScripts;
     }

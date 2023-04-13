@@ -68,8 +68,7 @@ public class ConverterService {
     }
 
     public ResponseObj<List<ResponseExecutableScript>> executeSqlScript(RequestExecutableScripts params) throws SQLException {
-        ResponseObj<List<ResponseExecutableScript>> response = new ResponseObj<>();
-        List<ResponseExecutableScript> responseExecutableScripts = new LinkedList<>();
+        ResponseObj<List<ResponseExecutableScript>> response = new ResponseObj<>(new LinkedList<>());
         for (RequestExecutableScript script: params.getScripts()){
             ResponseObj<ResponseExecutableScript> responseItem = targetDBRepository.executeSqlScript(script);
             if (!responseItem.getError().getCode().equals(ResultCode.OK.value())) {
@@ -83,8 +82,6 @@ public class ConverterService {
             }
             response.getResult().add(responseItem.getResult());
         }
-
-        response.setResult(responseExecutableScripts);
         return response;
     }
 
