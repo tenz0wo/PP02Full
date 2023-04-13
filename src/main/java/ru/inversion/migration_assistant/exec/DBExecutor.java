@@ -12,7 +12,7 @@ public abstract class DBExecutor<T> implements Executor<T>{
 
     protected DBType dbType;
 
-    public DBExecutor(ExecutorParams executorParams) {
+    public DBExecutor(ExecutorParams<? extends DbConnectionParams> executorParams) {
         this.params = executorParams.getWrappedParams();
         this.dbType = DBType.defineByUrl(params.getUrl());
     }
