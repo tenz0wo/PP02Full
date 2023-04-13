@@ -12,8 +12,6 @@ import ru.inversion.migration_assistant.model.request.RequestExecutableScript;
 import ru.inversion.migration_assistant.model.response.ResponseCheckTable;
 import ru.inversion.migration_assistant.model.response.ResponseExecutableScript;
 
-import java.util.List;
-
 @Service
 @Slf4j
 public class TargetDBRepository {

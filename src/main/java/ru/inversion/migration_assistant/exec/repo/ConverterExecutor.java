@@ -37,9 +37,7 @@ public class ConverterExecutor extends RequestParamsExecutor<TablesDto> {
                     callableStatement.setString(3, params.getI_schema_name());
                     callableStatement.setString(4, params.getI_schema_name());
                 },
-                callableStatement -> {
-                    convertResult.set(callableStatement.getString(1));
-                });
+                callableStatement -> convertResult.set(callableStatement.getString(1)));
         return convertResult.get();
     }
 

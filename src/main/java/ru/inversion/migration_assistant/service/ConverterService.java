@@ -17,8 +17,8 @@ import java.util.List;
 @Service
 public class ConverterService {
 
-    protected SourceDBRepository sourceDBRepository;
-    protected TargetDBRepository targetDBRepository;
+    protected final SourceDBRepository sourceDBRepository;
+    protected final TargetDBRepository targetDBRepository;
 
     @Autowired
     public ConverterService(SourceDBRepository sourceDBRepository, TargetDBRepository targetDBRepository) {
@@ -26,7 +26,7 @@ public class ConverterService {
         this.targetDBRepository = targetDBRepository;
     }
 
-    public ResponseObj<List<TablesDto>> getConvertUi(RequestParams[] paramRows) throws SQLException {
+    public ResponseObj<List<TablesDto>> getConvertUi(RequestParams[] paramRows) {
         List<TablesDto> tableRows = new LinkedList<>();
         List.of(paramRows).forEach(singleTableParams -> {
             ResponseObj<TablesDto> tableRowResponse = sourceDBRepository.getConvertUi(singleTableParams);
@@ -47,19 +47,19 @@ public class ConverterService {
     }
 
 
-    public ResponseObj<List<String>> getTableList(RequestParams params) throws SQLException{
+    public ResponseObj<List<String>> getTableList(RequestParams params) {
         return sourceDBRepository.getTableList(params);
     }
 
-    public ResponseObj<List<String>> getTableSchemaList(RequestParams params) throws SQLException{
+    public ResponseObj<List<String>> getTableSchemaList(RequestParams params) {
         return sourceDBRepository.getTableSchemaList(params);
     }
 
-    public ResponseObj<List<String>> getPackageList(RequestParams params) throws SQLException{
+    public ResponseObj<List<String>> getPackageList(RequestParams params) {
         return sourceDBRepository.getPackageList(params);
     }
 
-    public ResponseObj<List<String>> getPackageSchemaList(RequestParams params) throws SQLException{
+    public ResponseObj<List<String>> getPackageSchemaList(RequestParams params) {
         return sourceDBRepository.getPackageSchemaList(params);
     }
 
@@ -67,7 +67,7 @@ public class ConverterService {
         return sourceDBRepository.getTablesByPackage(params);
     }
 
-    public ResponseObj<List<ResponseExecutableScript>> executeSqlScript(RequestExecutableScripts params) throws SQLException {
+    public ResponseObj<List<ResponseExecutableScript>> executeSqlScript(RequestExecutableScripts params) {
         ResponseObj<List<ResponseExecutableScript>> response = new ResponseObj<>(new LinkedList<>());
         for (RequestExecutableScript script: params.getScripts()){
             ResponseObj<ResponseExecutableScript> responseItem = targetDBRepository.executeSqlScript(script);
@@ -85,7 +85,7 @@ public class ConverterService {
         return response;
     }
 
-    public ResponseObj<ResponseCheckTable> checkTable(RequestCheckTable params) throws SQLException {
+    public ResponseObj<ResponseCheckTable> checkTable(RequestCheckTable params) {
         return targetDBRepository.checkTable(params);
     }
 }

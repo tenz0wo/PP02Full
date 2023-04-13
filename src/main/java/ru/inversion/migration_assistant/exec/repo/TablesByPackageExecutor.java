@@ -14,7 +14,7 @@ public class TablesByPackageExecutor extends RequestParamsExecutor<List<DbObject
 
     String query;
     DbObjectWithSchema columns;
-    List<DbObjectWithSchema> tablesByPackageList = new LinkedList<>();
+    final List<DbObjectWithSchema> tablesByPackageList = new LinkedList<>();
 
 
     public TablesByPackageExecutor(ExecutorParams<RequestParams> executorParams) {

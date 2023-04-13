@@ -13,9 +13,9 @@ import java.util.List;
 public class SingleColumnListExecutor extends RequestParamsExecutor<List<String>> {
     String query = "";
     String column = "";
-    List<String> responseSingleColumnList = new LinkedList<>();
-    ObjectPart objectPart;
-    ObjectType objectType;
+    final List<String> responseSingleColumnList = new LinkedList<>();
+    final ObjectPart objectPart;
+    final ObjectType objectType;
 
     public SingleColumnListExecutor (SingleColumnListParams<RequestParams> params) {
         super(params);

@@ -4,14 +4,10 @@ import ru.inversion.migration_assistant.exec.DBExecutor;
 import ru.inversion.migration_assistant.exec.ExecutorParams;
 import ru.inversion.migration_assistant.model.request.ExecutableScript;
 import ru.inversion.migration_assistant.model.request.RequestExecutableScript;
-import ru.inversion.migration_assistant.model.request.RequestExecutableScripts;
 import ru.inversion.migration_assistant.model.response.ResponseExecutableScript;
 
-import java.util.LinkedList;
-import java.util.List;
-
 public class SqlScriptExecutor extends DBExecutor<ResponseExecutableScript> {
-    RequestExecutableScript params;
+    final RequestExecutableScript params;
 
     public SqlScriptExecutor(ExecutorParams<RequestExecutableScript> params) {
         super(params);

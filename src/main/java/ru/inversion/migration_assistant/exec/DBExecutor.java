@@ -8,9 +8,9 @@ import java.sql.*;
 public abstract class DBExecutor<T> implements Executor<T>{
     Connection connection = null;
 
-    DbConnectionParams params;
+    final DbConnectionParams params;
 
-    protected DBType dbType;
+    protected final DBType dbType;
 
     public DBExecutor(ExecutorParams<? extends DbConnectionParams> executorParams) {
         this.params = executorParams.getWrappedParams();

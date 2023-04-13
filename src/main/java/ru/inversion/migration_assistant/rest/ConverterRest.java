@@ -20,7 +20,7 @@ import java.util.List;
 @RestController
 @Slf4j
 public class ConverterRest{
-    protected ConverterService converterService;
+    protected final ConverterService converterService;
 
     @Autowired
     public ConverterRest(ConverterService converterService) {

@@ -12,7 +12,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
-
+import java.util.List;
 
 
 @OpenAPIDefinition(info = @Info(title = "Table Migration Converter Application", version = "1.0-SNAPSHOT"))
@@ -25,7 +25,7 @@ public class TableMigrationConverterApplication {
     public CorsFilter corsFilter() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setAllowedOriginPatterns(Arrays.asList("*"));
+        corsConfiguration.setAllowedOriginPatterns(List.of("*"));
         corsConfiguration.setAllowedHeaders(Arrays.asList("Origin", "Access-Control-Allow-Origin", "Content-Type",
                 "Accept", "Authorization", "Origin, Accept", "X-Requested-With",
                 "Access-Control-Request-Method", "Access-Control-Request-Headers", "Access-Control-Request-Credentials",

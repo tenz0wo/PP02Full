@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.util.Objects;
 
 public class CheckTableExecutor extends DBExecutor<ResponseCheckTable> {
-    RequestCheckTable params;
+    final RequestCheckTable params;
     enum CheckType {EXISTS, NOT_EMPTY}
     String queryExists;
     String queryNotEmpty;

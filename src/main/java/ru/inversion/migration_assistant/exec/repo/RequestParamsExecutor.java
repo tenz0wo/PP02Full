@@ -6,7 +6,7 @@ import ru.inversion.migration_assistant.exec.ExecutorParams;
 import ru.inversion.migration_assistant.model.request.RequestParams;
 
 public abstract class RequestParamsExecutor<T> extends DBExecutor<T> {
-    RequestParams params;
+    final RequestParams params;
 
     public RequestParamsExecutor(ExecutorParams<RequestParams> executorParams) {
         super(executorParams);

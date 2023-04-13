@@ -8,16 +8,15 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 
 public class DBExecHandler<T> {
 
     DBExecutor<T> executor;
-    Class<? extends DBExecutor<T>> execClass;
-    ExecutorParams params;
+    final Class<? extends DBExecutor<T>> execClass;
+    final ExecutorParams<? extends DbConnectionParams> params;
 
 
-    public DBExecHandler(Class<? extends DBExecutor<T>> execClass, ExecutorParams params) {
+    public DBExecHandler(Class<? extends DBExecutor<T>> execClass, ExecutorParams<? extends DbConnectionParams> params) {
         this.execClass = execClass;
         this.params = params;
     }
