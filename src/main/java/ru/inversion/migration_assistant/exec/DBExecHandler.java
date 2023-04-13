@@ -4,8 +4,11 @@ import ru.inversion.migration_assistant.model.common.DbConnectionParams;
 import ru.inversion.migration_assistant.model.common.ResponseObj;
 import ru.inversion.migration_assistant.util.ResultCode;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 
 public class DBExecHandler<T> {
 
@@ -28,8 +31,9 @@ public class DBExecHandler<T> {
             executor.closeConnection();
         } catch (Exception ex) {
             response.getError().setCode(ResultCode.COMMON_ERROR.value());
-            response.getError().setMessage(ex.toString());
-            ex.printStackTrace();
+            StringWriter sw = new StringWriter();
+            ex.printStackTrace(new PrintWriter(sw));
+            response.getError().setMessage(sw.toString());
         }
         return response;
     }

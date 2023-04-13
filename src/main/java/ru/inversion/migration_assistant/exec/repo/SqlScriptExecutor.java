@@ -3,33 +3,30 @@ package ru.inversion.migration_assistant.exec.repo;
 import ru.inversion.migration_assistant.exec.DBExecutor;
 import ru.inversion.migration_assistant.exec.ExecutorParams;
 import ru.inversion.migration_assistant.model.request.ExecutableScript;
-import ru.inversion.migration_assistant.model.request.RequestCheckTable;
+import ru.inversion.migration_assistant.model.request.RequestExecutableScript;
 import ru.inversion.migration_assistant.model.request.RequestExecutableScripts;
-import ru.inversion.migration_assistant.model.response.ResponseExecutableScripts;
+import ru.inversion.migration_assistant.model.response.ResponseExecutableScript;
 
-import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-public class SqlScriptExecutor extends DBExecutor<List<ResponseExecutableScripts>> {
-    RequestExecutableScripts params;
+public class SqlScriptExecutor extends DBExecutor<ResponseExecutableScript> {
+    RequestExecutableScript params;
 
-    public SqlScriptExecutor(ExecutorParams<RequestExecutableScripts> params) {
+    public SqlScriptExecutor(ExecutorParams<RequestExecutableScript> params) {
         super(params);
         this.params = params.getWrappedParams();
     }
 
     @Override
-    public List<ResponseExecutableScripts> exec() throws Exception {
-        List<ResponseExecutableScripts> response = new LinkedList<>();
-        for (ExecutableScript executableScript : params.getExecutableScripts()){
-            ResponseExecutableScripts responseExecutableScripts = new ResponseExecutableScripts();
-            responseExecutableScripts.setScriptName(executableScript.getScriptName());
-            execute(executableScript.getScript());
-            responseExecutableScripts.setResponse("Ok");
-            response.add(responseExecutableScripts);
-            execute("commit;");
-        }
-        return response;
+    public ResponseExecutableScript exec() throws Exception {
+        ExecutableScript executableScript = params.getExecutableScript();
+        ResponseExecutableScript responseExecutableScript = new ResponseExecutableScript();
+        responseExecutableScript.setScriptName(executableScript.getScriptName());
+        boolean result = execute(executableScript.getScript());
+        responseExecutableScript.setResponse(result ? "Ok" : "Fail");
+        execute("commit;");
+
+        return responseExecutableScript;
     }
 }

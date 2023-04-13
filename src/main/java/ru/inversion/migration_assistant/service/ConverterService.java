@@ -67,8 +67,25 @@ public class ConverterService {
         return sourceDBRepository.getTablesByPackage(params);
     }
 
-    public ResponseObj<List<ResponseExecutableScripts>> executeSqlScript(RequestExecutableScripts params) throws SQLException {
-        return targetDBRepository.executeSqlScript(params);
+    public ResponseObj<List<ResponseExecutableScript>> executeSqlScript(RequestExecutableScripts params) throws SQLException {
+        ResponseObj<List<ResponseExecutableScript>> response = new ResponseObj<>();
+        List<ResponseExecutableScript> responseExecutableScripts = new LinkedList<>();
+        for (RequestExecutableScript script: params.getScripts()){
+            ResponseObj<ResponseExecutableScript> responseItem = targetDBRepository.executeSqlScript(script);
+            if (!responseItem.getError().getCode().equals(ResultCode.OK.value())) {
+                ResponseExecutableScript problemExecutableScript = new ResponseExecutableScript();
+                problemExecutableScript.setScriptName(script.getExecutableScript().getScriptName());
+                problemExecutableScript.setResponse("Error");
+                response.getResult().add(problemExecutableScript);
+                response.getError().setCode(responseItem.getError().getCode());
+                response.getError().setMessage(responseItem.getError().getMessage());
+                return response;
+            }
+            response.getResult().add(responseItem.getResult());
+        }
+
+        response.setResult(responseExecutableScripts);
+        return response;
     }
 
     public ResponseObj<ResponseCheckTable> checkTable(RequestCheckTable params) throws SQLException {

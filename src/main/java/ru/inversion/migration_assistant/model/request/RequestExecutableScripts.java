@@ -9,4 +9,13 @@ import java.util.List;
 @Data
 public class RequestExecutableScripts extends DbConnectionParamsImpl {
     List<ExecutableScript> executableScripts = new LinkedList<>();
+
+    public List<RequestExecutableScript> getScripts(){
+        List<RequestExecutableScript> requestExecutableScripts = new LinkedList<>();
+        executableScripts.forEach(executableScript -> {
+            RequestExecutableScript request = new RequestExecutableScript(this);
+            request.setExecutableScript(executableScript);
+        });
+        return requestExecutableScripts;
+    }
 }

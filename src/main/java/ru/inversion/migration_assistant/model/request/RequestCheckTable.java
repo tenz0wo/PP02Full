@@ -5,6 +5,7 @@ import ru.inversion.migration_assistant.model.common.DbConnectionParamsImpl;
 
 @Data
 public class RequestCheckTable extends DbConnectionParamsImpl {
+    boolean changeTableCase;
     String schema;
     String table;
 }

@@ -8,17 +8,16 @@ import ru.inversion.migration_assistant.exec.repo.CheckTableExecutor;
 import ru.inversion.migration_assistant.exec.repo.SqlScriptExecutor;
 import ru.inversion.migration_assistant.model.common.ResponseObj;
 import ru.inversion.migration_assistant.model.request.RequestCheckTable;
-import ru.inversion.migration_assistant.model.request.RequestExecutableScripts;
+import ru.inversion.migration_assistant.model.request.RequestExecutableScript;
 import ru.inversion.migration_assistant.model.response.ResponseCheckTable;
-import ru.inversion.migration_assistant.model.response.ResponseExecutableScripts;
+import ru.inversion.migration_assistant.model.response.ResponseExecutableScript;
 
-import java.sql.*;
 import java.util.List;
 
 @Service
 @Slf4j
 public class TargetDBRepository {
-    public ResponseObj<List<ResponseExecutableScripts>> executeSqlScript(RequestExecutableScripts params) throws SQLException {
+    public ResponseObj<ResponseExecutableScript> executeSqlScript(RequestExecutableScript params){
         return new DBExecHandler<>(SqlScriptExecutor.class, new ExecutorParams<>(params)).exec();
     }
 
