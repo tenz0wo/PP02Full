@@ -29,7 +29,7 @@ public class ConverterRest{
 
     @PostMapping(path = "migration/convert/ui")
     @ResponseBody
-    public ResponseEntity<?> getConvertUi(@RequestBody RequestParams[] request) throws SQLException{
+    public ResponseEntity<?> getConvertUi(@RequestBody RequestParams[] request) throws Exception {
         ResponseObj<List<TablesDto>> response = converterService.getConvertUi(request);
         return ResponseEntity.ok(response);
     }
@@ -72,7 +72,7 @@ public class ConverterRest{
 
     @PostMapping(path = "migration/execute-sql-script")
     @ResponseBody
-    public ResponseEntity<?> executeSqlScript(@RequestBody RequestExecutableScripts request) throws SQLException {
+    public ResponseEntity<?> executeSqlScript(@RequestBody RequestExecutableScripts request) throws Exception {
         return ResponseEntity.ok(converterService.executeSqlScript(request));
     }
 
