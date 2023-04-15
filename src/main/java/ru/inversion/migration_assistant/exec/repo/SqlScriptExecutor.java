@@ -20,7 +20,7 @@ public class SqlScriptExecutor extends DBExecutor<ResponseExecutableScript> {
         ResponseExecutableScript responseExecutableScript = new ResponseExecutableScript();
         responseExecutableScript.setScriptName(executableScript.getScriptName());
         boolean result = execute(executableScript.getScript());
-        responseExecutableScript.setResponse(result ? "Ok" : "Fail");
+        responseExecutableScript.setResponse("Ok");
         execute("commit");
 
         return responseExecutableScript;
