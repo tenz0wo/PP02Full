@@ -6,5 +6,6 @@ import lombok.Data;
 public class TablesDto {
     String version;
     String prefix;
+    String schema;
     TableDto table = new TableDto();
 }

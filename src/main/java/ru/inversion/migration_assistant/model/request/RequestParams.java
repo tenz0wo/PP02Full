@@ -11,4 +11,5 @@ public class RequestParams extends DbConnectionParamsImpl {
     String i_index_tablespace;
     String i_dbms;
     String i_seq_option;
+    String i_target_schema_name;
 }

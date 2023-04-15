@@ -35,7 +35,7 @@ public class ConverterExecutor extends RequestParamsExecutor<TablesDto> {
                     callableStatement.registerOutParameter(1, Types.CLOB);
                     callableStatement.setString(2, params.getI_prefix());
                     callableStatement.setString(3, params.getI_schema_name());
-                    callableStatement.setString(4, params.getI_schema_name());
+                    callableStatement.setString(4, params.getI_target_schema_name());
                 },
                 callableStatement -> convertResult.set(callableStatement.getString(1)));
         return convertResult.get();
@@ -47,9 +47,10 @@ public class ConverterExecutor extends RequestParamsExecutor<TablesDto> {
         dc.loadXml(tableConvertResult);
         tables.setVersion(dc.e("version").asStr());
         tables.setPrefix(dc.e("prefix").asStr());
+        tables.setSchema(dc.e("source_shema_name").asStr());
         DCont dcTable = dc.e("table");
         TableDto table = new TableDto();
-        table.setSchemaName(dcTable.e("shema_name").asStr());
+        table.setSchemaName(dcTable.e("source_shema_name").asStr());
         table.setTableName(dcTable.e("table_name").asStr());
         table.setDdlTabPg(dcTable.e("ddl_tab_pg").asStr());
         table.setDdlConPg(dcTable.e("ddl_con_pg").asStr());
