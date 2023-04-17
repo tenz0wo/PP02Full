@@ -3,6 +3,7 @@
 
 FROM adoptopenjdk/openjdk11:alpine-jre  
 ARG JAR_FILE=target/table-migration-converter-1.0-SNAPSHOT.jar
+
 ENV REMOTE_LAUNCH_HOST=srvkulan
 WORKDIR /opt/app  
 EXPOSE 8282:8080
