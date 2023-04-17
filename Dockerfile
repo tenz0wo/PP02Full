@@ -3,6 +3,8 @@
 
 FROM adoptopenjdk/openjdk11:alpine-jre  
 ARG JAR_FILE=target/table-migration-converter-1.0-SNAPSHOT.jar
+COPY ssl/corp_inversion_ru_2024_03_16.crt /opt/app/ssl/
+COPY ssl/keystore.p12 /opt/app/ssl/
 ENV REMOTE_LAUNCH_HOST=srvkulan
 WORKDIR /opt/app  
 EXPOSE 8282:8080
