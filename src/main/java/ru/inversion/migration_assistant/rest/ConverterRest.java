@@ -53,7 +53,7 @@ public class ConverterRest{
     @PostMapping(path = "migration/package-list")
     @ResponseBody
     public ResponseEntity<?> getPackageList(@RequestBody RequestParams request) throws SQLException{
-        List<String> response = converterService.getPackageList(request).getResult();
+        List<DoubleParam> response = converterService.getPackageList(request).getResult();
         return ResponseEntity.ok(response);
     }
 

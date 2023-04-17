@@ -88,7 +88,7 @@ public class ConverterService {
         return sourceDBRepository.getTableSchemaList(params);
     }
 
-    public ResponseObj<List<String>> getPackageList(RequestParams params) {
+    public ResponseObj<List<DoubleParam>> getPackageList(RequestParams params) {
         return sourceDBRepository.getPackageList(params);
     }
 
