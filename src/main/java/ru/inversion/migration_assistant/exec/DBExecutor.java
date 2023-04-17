@@ -17,7 +17,7 @@ public abstract class DBExecutor<T> implements Executor<T>{
         this.dbType = DBType.defineByUrl(params.getUrl());
     }
 
-    private Connection getConnection() throws SQLException {
+    protected Connection getConnection() throws SQLException {
         if (connection == null) {
             connection = DriverManager.getConnection(params.getUrl(), params.getUser(), params.getPassword());
         }

@@ -47,7 +47,11 @@ public class ConverterExecutor extends RequestParamsExecutor<TablesDto> {
         dc.loadXml(tableConvertResult);
         tables.setVersion(dc.e("version").asStr());
         tables.setPrefix(dc.e("prefix").asStr());
-        tables.setSchema(dc.e("source_shema_name").asStr());
+        String commonSchema = dc.e("source_shema_name").asStr();
+        if (commonSchema.isBlank()) {
+            commonSchema = params.getI_schema_name();
+        }
+        tables.setSchema(commonSchema);
         DCont dcTable = dc.e("table");
         TableDto table = new TableDto();
         table.setSchemaName(dcTable.e("source_shema_name").asStr());

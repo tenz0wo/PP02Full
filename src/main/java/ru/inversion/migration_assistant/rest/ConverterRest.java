@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.inversion.migration_assistant.model.common.DbConnectionParams;
+import ru.inversion.migration_assistant.model.common.DbConnectionParamsImpl;
 import ru.inversion.migration_assistant.model.common.ResponseObj;
 import ru.inversion.migration_assistant.model.request.RequestCheckTable;
 import ru.inversion.migration_assistant.model.request.RequestExecutableScripts;
@@ -80,6 +82,12 @@ public class ConverterRest{
     @ResponseBody
     public ResponseEntity<?> checkTable(@RequestBody RequestCheckTable request) throws SQLException {
         return ResponseEntity.ok(converterService.checkTable(request));
+    }
+
+    @PostMapping(path = "migration/check-connection")
+    @ResponseBody
+    public ResponseEntity<?> checkTable(@RequestBody DbConnectionParamsImpl request) throws SQLException {
+        return ResponseEntity.ok(converterService.checkConnection(request));
     }
 
 }
