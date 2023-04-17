@@ -5,13 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.inversion.migration_assistant.model.common.DbConnectionParams;
 import ru.inversion.migration_assistant.model.common.DbConnectionParamsImpl;
 import ru.inversion.migration_assistant.model.common.ResponseObj;
 import ru.inversion.migration_assistant.model.request.RequestCheckTable;
 import ru.inversion.migration_assistant.model.request.RequestExecutableScripts;
 import ru.inversion.migration_assistant.model.request.RequestParams;
 import ru.inversion.migration_assistant.model.response.DbObjectWithSchema;
+import ru.inversion.migration_assistant.model.response.DoubleParam;
 import ru.inversion.migration_assistant.model.response.TablesDto;
 import ru.inversion.migration_assistant.service.ConverterService;
 
@@ -39,7 +39,7 @@ public class ConverterRest{
     @PostMapping(path = "migration/table-list")
     @ResponseBody
     public ResponseEntity<?> getTableList(@RequestBody RequestParams request) throws SQLException{
-        List<String> response = converterService.getTableList(request).getResult();
+        List<DoubleParam> response = converterService.getTableList(request).getResult();
         return ResponseEntity.ok(response);
     }
 

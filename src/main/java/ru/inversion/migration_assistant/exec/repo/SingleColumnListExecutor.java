@@ -17,7 +17,7 @@ public class SingleColumnListExecutor extends RequestParamsExecutor<List<String>
     final ObjectPart objectPart;
     final ObjectType objectType;
 
-    public SingleColumnListExecutor (SingleColumnListParams<RequestParams> params) {
+    public SingleColumnListExecutor (ColumnListParams<RequestParams> params) {
         super(params);
         this.objectPart = params.getObjectPart();
         this.objectType = params.getObjectType();

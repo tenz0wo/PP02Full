@@ -8,6 +8,7 @@ import ru.inversion.migration_assistant.exec.repo.*;
 import ru.inversion.migration_assistant.model.common.ResponseObj;
 import ru.inversion.migration_assistant.model.request.RequestParams;
 import ru.inversion.migration_assistant.model.response.DbObjectWithSchema;
+import ru.inversion.migration_assistant.model.response.DoubleParam;
 import ru.inversion.migration_assistant.model.response.TablesDto;
 import ru.inversion.migration_assistant.model.sql.ObjectPart;
 import ru.inversion.migration_assistant.model.sql.ObjectType;
@@ -23,24 +24,24 @@ public class SourceDBRepository {
         return new DBExecHandler<>(ConverterExecutor.class, new ExecutorParams<>(params)).exec();
     }
 
-    public ResponseObj<List<String>> getTableList(RequestParams params) {
-        SingleColumnListParams<RequestParams> singleColumnListParams = new SingleColumnListParams<>(params, ObjectType.TABLE, ObjectPart.OBJECT);
-        return new DBExecHandler<>(SingleColumnListExecutor.class, singleColumnListParams).exec();
+    public ResponseObj<List<DoubleParam>> getTableList(RequestParams params) {
+        ColumnListParams<RequestParams> columnListParams = new ColumnListParams<>(params, ObjectType.TABLE, ObjectPart.OBJECT);
+        return new DBExecHandler<>(DoubleColumnListExecutor.class, columnListParams).exec();
     }
 
     public ResponseObj<List<String>> getTableSchemaList(RequestParams params) {
-        SingleColumnListParams<RequestParams> singleColumnListParams = new SingleColumnListParams<>(params, ObjectType.TABLE, ObjectPart.SCHEMA);
-        return new DBExecHandler<>(SingleColumnListExecutor.class, singleColumnListParams).exec();
+        ColumnListParams<RequestParams> columnListParams = new ColumnListParams<>(params, ObjectType.TABLE, ObjectPart.SCHEMA);
+        return new DBExecHandler<>(SingleColumnListExecutor.class, columnListParams).exec();
     }
 
-    public ResponseObj<List<String>> getPackageList(RequestParams params) {
-        SingleColumnListParams<RequestParams> singleColumnListParams = new SingleColumnListParams<>(params, ObjectType.PACKAGE, ObjectPart.OBJECT);
-        return new DBExecHandler<>(SingleColumnListExecutor.class, singleColumnListParams).exec();
+    public ResponseObj<List<DoubleParam>> getPackageList(RequestParams params) {
+        ColumnListParams<RequestParams> columnListParams = new ColumnListParams<>(params, ObjectType.PACKAGE, ObjectPart.OBJECT);
+        return new DBExecHandler<>(DoubleColumnListExecutor.class, columnListParams).exec();
     }
 
     public ResponseObj<List<String>> getPackageSchemaList(RequestParams params) {
-        SingleColumnListParams<RequestParams> singleColumnListParams = new SingleColumnListParams<>(params, ObjectType.PACKAGE, ObjectPart.SCHEMA);
-        return new DBExecHandler<>(SingleColumnListExecutor.class, singleColumnListParams).exec();
+        ColumnListParams<RequestParams> columnListParams = new ColumnListParams<>(params, ObjectType.PACKAGE, ObjectPart.SCHEMA);
+        return new DBExecHandler<>(SingleColumnListExecutor.class, columnListParams).exec();
     }
 
     public ResponseObj<List<DbObjectWithSchema>> getTablesByPackage(RequestParams params) throws SQLException {

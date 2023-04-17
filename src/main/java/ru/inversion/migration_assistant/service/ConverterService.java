@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.inversion.migration_assistant.exec.ExecutorConsumer;
 import ru.inversion.migration_assistant.model.common.DbConnectionParams;
-import ru.inversion.migration_assistant.model.common.ResponseError;
 import ru.inversion.migration_assistant.model.common.ResponseObj;
 import ru.inversion.migration_assistant.model.request.*;
 import ru.inversion.migration_assistant.model.response.*;
@@ -81,7 +80,7 @@ public class ConverterService {
         );
     }
 
-    public ResponseObj<List<String>> getTableList(RequestParams params) {
+    public ResponseObj<List<DoubleParam>> getTableList(RequestParams params) {
         return sourceDBRepository.getTableList(params);
     }
 
