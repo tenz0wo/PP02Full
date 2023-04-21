@@ -5,11 +5,12 @@ import org.springframework.stereotype.Service;
 import ru.inversion.migration_assistant.exec.DBExecHandler;
 import ru.inversion.migration_assistant.exec.ExecutorParams;
 import ru.inversion.migration_assistant.exec.repo.*;
+import ru.inversion.migration_assistant.model.common.DbConnectionParams;
 import ru.inversion.migration_assistant.model.common.ResponseObj;
+import ru.inversion.migration_assistant.model.request.RequestEditColumnHints;
 import ru.inversion.migration_assistant.model.request.RequestParams;
-import ru.inversion.migration_assistant.model.response.DbObjectWithSchema;
-import ru.inversion.migration_assistant.model.response.DoubleParam;
-import ru.inversion.migration_assistant.model.response.TablesDto;
+import ru.inversion.migration_assistant.model.request.RequestTableColumn;
+import ru.inversion.migration_assistant.model.response.*;
 import ru.inversion.migration_assistant.model.sql.ObjectPart;
 import ru.inversion.migration_assistant.model.sql.ObjectType;
 
@@ -48,4 +49,15 @@ public class SourceDBRepository {
         return new DBExecHandler<>(TablesByPackageExecutor.class, new ExecutorParams<>(params)).exec();
     }
 
+    public ResponseObj<ResponseAppendColumnHints> appendColumnHints(RequestEditColumnHints params){
+        return new DBExecHandler<>(AppendColumnHintsExecutor.class, new ExecutorParams<>(params)).exec();
+    }
+
+    public ResponseObj<ResponseColumnsHints> getColumnHints(DbConnectionParams params){
+        return new DBExecHandler<>(ColumnHintsExecutor.class, new ExecutorParams<>(params)).exec();
+    }
+
+    public ResponseObj<ResponseTableColumns> getTableColumns(RequestTableColumn params){
+        return new DBExecHandler<>(TableColumnExecutor.class, new ExecutorParams<>(params)).exec();
+    }
 }

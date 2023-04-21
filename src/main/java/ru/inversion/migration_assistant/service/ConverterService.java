@@ -107,4 +107,17 @@ public class ConverterService {
     public ResponseObj<String> checkConnection(DbConnectionParams params) {
         return targetDBRepository.checkConnection(params);
     }
+
+    public ResponseObj<ResponseAppendColumnHints> appendColumnHints(RequestEditColumnHints params) throws Exception {
+        return sourceDBRepository.appendColumnHints(params);
+    }
+
+    public ResponseObj<ResponseColumnsHints> getColumnHints(DbConnectionParams params) {
+        return sourceDBRepository.getColumnHints(params);
+    }
+
+    public ResponseObj<ResponseTableColumns> getTableColumns(RequestTableColumn params) {
+        return sourceDBRepository.getTableColumns(params);
+    }
+
 }

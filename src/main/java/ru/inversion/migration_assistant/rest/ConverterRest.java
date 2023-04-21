@@ -2,16 +2,16 @@ package ru.inversion.migration_assistant.rest;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.inversion.migration_assistant.model.common.DbConnectionParamsImpl;
 import ru.inversion.migration_assistant.model.common.ResponseObj;
-import ru.inversion.migration_assistant.model.request.RequestCheckTable;
-import ru.inversion.migration_assistant.model.request.RequestExecutableScripts;
-import ru.inversion.migration_assistant.model.request.RequestParams;
+import ru.inversion.migration_assistant.model.request.*;
 import ru.inversion.migration_assistant.model.response.DbObjectWithSchema;
 import ru.inversion.migration_assistant.model.response.DoubleParam;
+import ru.inversion.migration_assistant.model.response.ResponseAppendColumnHints;
 import ru.inversion.migration_assistant.model.response.TablesDto;
 import ru.inversion.migration_assistant.service.ConverterService;
 
@@ -38,7 +38,7 @@ public class ConverterRest{
 
     @PostMapping(path = "migration/table-list")
     @ResponseBody
-    public ResponseEntity<?> getTableList(@RequestBody RequestParams request) throws SQLException{
+    public ResponseEntity<?> getTableList(@RequestBody RequestParams request, @RequestHeader HttpHeaders headers) throws SQLException{
         List<DoubleParam> response = converterService.getTableList(request).getResult();
         return ResponseEntity.ok(response);
     }
@@ -88,6 +88,27 @@ public class ConverterRest{
     @ResponseBody
     public ResponseEntity<?> checkTable(@RequestBody DbConnectionParamsImpl request) throws SQLException {
         return ResponseEntity.ok(converterService.checkConnection(request));
+    }
+
+    @PostMapping(path = "migration/append-column-hints")
+    @ResponseBody
+    public ResponseEntity<?> appendColumnHints(@RequestBody RequestEditColumnHints request) throws Exception {
+        ResponseObj<ResponseAppendColumnHints> response = converterService.appendColumnHints(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping(path = "migration/get-column-hints")
+    @ResponseBody
+    public ResponseEntity<?> getColumnHints(@RequestBody DbConnectionParamsImpl request) throws Exception {
+        ResponseObj<?> response = converterService.getColumnHints(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping(path = "migration/get-table-columns")
+    @ResponseBody
+    public ResponseEntity<?> getTableColumns(@RequestBody RequestTableColumn request) throws Exception {
+        ResponseObj<?> response = converterService.getTableColumns(request);
+        return ResponseEntity.ok(response);
     }
 
 }

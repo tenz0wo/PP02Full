@@ -30,7 +30,7 @@ public class TableMigrationConverterApplication {
                 "Accept", "Authorization", "Origin, Accept", "X-Requested-With",
                 "Access-Control-Request-Method", "Access-Control-Request-Headers", "Access-Control-Request-Credentials",
                 "Access-Control-Allow-Credentials", "Access-Control-Allow-Headers",
-                "Cookie", "Set-Cookie", "INV_SESSION"));
+                "Cookie", "Set-Cookie", "INV_SESSION", "X-Forwarded-For"));
         corsConfiguration.setExposedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization",
                 "Access-Control-Allow-Origin", "Access-Control-Allow-Origin",
                 "Access-Control-Allow-Credentials", "Access-Control-Allow-Headers",
@@ -38,6 +38,11 @@ public class TableMigrationConverterApplication {
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
         urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+
+//        response.setHeader("Access-Control-Allow-Origin", "*");
+//        response.setHeader("Access-Control-Allow-Credentials", "true");
+//        response.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+//        response.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
         return new CorsFilter(urlBasedCorsConfigurationSource);
     }
 }
