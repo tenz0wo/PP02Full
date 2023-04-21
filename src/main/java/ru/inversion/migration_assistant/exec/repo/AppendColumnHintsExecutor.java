@@ -44,6 +44,9 @@ public class AppendColumnHintsExecutor extends RequestEditColumnHintsExecutor<Re
     void describeResultCode(){
         try {
             response.setDescription(descriptions.get(response.getCode()));
+            if (response.getDescription().isBlank()){
+                throw new RuntimeException("Error: Unknown function's return code: " + response.getCode());
+            }
         } catch (NullPointerException ex){
             throw new RuntimeException("Error: Unknown function's return code: " + response.getCode());
         }
@@ -55,6 +58,6 @@ public class AppendColumnHintsExecutor extends RequestEditColumnHintsExecutor<Re
     void populateDescriptions(){
         descriptions.put(-1, "Переданы не все параметры");
         descriptions.put(0, "Добавлен новый хинт");
-        descriptions.put(2, "Хинт обновлен");
+        descriptions.put(1, "Хинт обновлен");
     }
 }
