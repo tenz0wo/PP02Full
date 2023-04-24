@@ -5,6 +5,6 @@ import ru.inversion.migration_assistant.model.common.DbConnectionParamsImpl;
 
 @Data
 public class RequestTableColumn extends DbConnectionParamsImpl {
-    String schema;
+    String table_schema;
     String table_name;
 }
