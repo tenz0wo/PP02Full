@@ -44,8 +44,8 @@ public class TableColumnExecutor extends DBExecutor<ResponseTableColumns> {
     }
 
     void defineQueries () {
-        String table = params.getTable_name();
-        String schema = params.getSchema();
+        String table = params.getTableName();
+        String schema = params.getTableSchema();
 
         if (dbType == DBType.ORACLE) {
             query = "SELECT COLUMN_NAME,\n" +
