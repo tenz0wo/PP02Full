@@ -72,8 +72,6 @@ public class TableColumnExecutor extends DBExecutor<ResponseTableColumns> {
                     "   AND COLUMN_NAME LIKE '%" + colPrefix + "%'" +
                     " ORDER BY COLUMN_ID";
 
-            System.out.println("query");
-            System.out.println(query);
         } else if (dbType == DBType.POSTGRES) {
             throw new RuntimeException("For DBType = " + dbType.name() + " query is not defined!");
         } else {
