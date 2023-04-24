@@ -51,7 +51,7 @@ public class TablesByPackageExecutor extends RequestParamsExecutor<List<DbObject
                 "                       --прямая зависимость кода от таблиц\n" +
                 "                       select d.referenced_name tname, d.owner\n" +
                 "                         from dba_dependencies d\n" +
-                "                        where d.owner = 'INVOPRO'\n" +
+                "                        where d.owner = '" + params.getI_schema_name() + "'\n" +
                 "                          and d.referenced_owner = d.owner\n" +
                 "                          and d.name in ('" + params.getI_prefix() + "') --пакеты для конвертации !!!\n" +
                 "                          and d.referenced_type='TABLE'\n" +
@@ -80,7 +80,7 @@ public class TablesByPackageExecutor extends RequestParamsExecutor<List<DbObject
                 "                                   and c2.CONSTRAINT_TYPE IN ('P','U')\n" +
                 "                                   and c2.CONSTRAINT_NAME=c.R_CONSTRAINT_NAME) t_main\n" +
                 "                          from dba_constraints c\n" +
-                "                         where c.owner = '\" + params.getI_schema_name() + \"INVOPRO'\n" +
+                "                         where c.owner = '" + params.getI_schema_name() + "'\n" +
                 "                           and c.R_owner = c.owner\n" +
                 "                           and c.CONSTRAINT_TYPE = 'R')\n" +
                 "                 where t_child!=t_main \n" +

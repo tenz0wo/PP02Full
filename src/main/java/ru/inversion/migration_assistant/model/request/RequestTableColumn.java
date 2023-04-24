@@ -11,4 +11,6 @@ public class RequestTableColumn extends DbConnectionParamsImpl {
     String tableSchema;
     @JsonProperty("table_name")
     String tableName;
+    @JsonProperty("col_prefix")
+    String colPrefix;
 }

@@ -1,4 +1,4 @@
-package ru.inversion.migration_assistant.exec.repo;
+package ru.inversion.migration_assistant.model.request;
 
 import lombok.Getter;
 import ru.inversion.migration_assistant.exec.ExecutorParams;

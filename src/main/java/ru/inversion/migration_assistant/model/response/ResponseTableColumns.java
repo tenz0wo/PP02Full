@@ -6,5 +6,5 @@ import java.util.List;
 
 @Data
 public class ResponseTableColumns {
-    List<ResponseTableColumn> tableColumns;
+    List<DoubleParam> tableColumns;
 }

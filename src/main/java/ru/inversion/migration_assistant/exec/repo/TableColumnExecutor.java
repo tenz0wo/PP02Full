@@ -5,6 +5,7 @@ import ru.inversion.migration_assistant.exec.DBExecutor;
 import ru.inversion.migration_assistant.exec.ExecutorConsumer;
 import ru.inversion.migration_assistant.exec.ExecutorParams;
 import ru.inversion.migration_assistant.model.request.RequestTableColumn;
+import ru.inversion.migration_assistant.model.response.DoubleParam;
 import ru.inversion.migration_assistant.model.response.ResponseTableColumn;
 import ru.inversion.migration_assistant.model.response.ResponseTableColumns;
 
@@ -30,13 +31,11 @@ public class TableColumnExecutor extends DBExecutor<ResponseTableColumns> {
     }
 
     ExecutorConsumer<ResultSet> createConsumer (ResponseTableColumns responseTableColumns) {
-        List<ResponseTableColumn> list = new LinkedList<>();
+        List<DoubleParam> list = new LinkedList<>();
         responseTableColumns.setTableColumns(list);
         return resultSet -> {
             while (resultSet.next()) {
-                ResponseTableColumn tableColumn = new ResponseTableColumn();
-                tableColumn.setColumnName(resultSet.getString(1));
-                tableColumn.setColumnType(resultSet.getString(2));
+                DoubleParam tableColumn = new DoubleParam(resultSet.getString(1), resultSet.getString(2));
 
                 responseTableColumns.getTableColumns().add(tableColumn);
             }
@@ -46,6 +45,7 @@ public class TableColumnExecutor extends DBExecutor<ResponseTableColumns> {
     void defineQueries () {
         String table = params.getTableName();
         String schema = params.getTableSchema();
+        String colPrefix = params.getColPrefix().toUpperCase();
 
         if (dbType == DBType.ORACLE) {
             query = "SELECT COLUMN_NAME,\n" +
@@ -69,7 +69,11 @@ public class TableColumnExecutor extends DBExecutor<ResponseTableColumns> {
                     "  FROM DBA_TAB_COLUMNS c\n" +
                     " WHERE OWNER = '" + schema + "'\n" +
                     "   AND TABLE_NAME = '" + table +"'\n" +
+                    "   AND COLUMN_NAME LIKE '%" + colPrefix + "%'" +
                     " ORDER BY COLUMN_ID";
+
+            System.out.println("query");
+            System.out.println(query);
         } else if (dbType == DBType.POSTGRES) {
             throw new RuntimeException("For DBType = " + dbType.name() + " query is not defined!");
         } else {

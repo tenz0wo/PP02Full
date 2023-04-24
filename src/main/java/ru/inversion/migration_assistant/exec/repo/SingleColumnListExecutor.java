@@ -2,6 +2,7 @@ package ru.inversion.migration_assistant.exec.repo;
 
 import ru.inversion.migration_assistant.db.DBType;
 import ru.inversion.migration_assistant.exec.ExecutorConsumer;
+import ru.inversion.migration_assistant.model.request.ColumnListParams;
 import ru.inversion.migration_assistant.model.request.RequestParams;
 import ru.inversion.migration_assistant.model.sql.ObjectPart;
 import ru.inversion.migration_assistant.model.sql.ObjectType;

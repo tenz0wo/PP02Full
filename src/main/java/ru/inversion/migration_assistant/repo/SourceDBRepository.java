@@ -7,6 +7,7 @@ import ru.inversion.migration_assistant.exec.ExecutorParams;
 import ru.inversion.migration_assistant.exec.repo.*;
 import ru.inversion.migration_assistant.model.common.DbConnectionParams;
 import ru.inversion.migration_assistant.model.common.ResponseObj;
+import ru.inversion.migration_assistant.model.request.ColumnListParams;
 import ru.inversion.migration_assistant.model.request.RequestEditColumnHints;
 import ru.inversion.migration_assistant.model.request.RequestParams;
 import ru.inversion.migration_assistant.model.request.RequestTableColumn;

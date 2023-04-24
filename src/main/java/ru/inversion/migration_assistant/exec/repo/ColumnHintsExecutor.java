@@ -69,7 +69,8 @@ public class ColumnHintsExecutor extends DBExecutor<ResponseColumnsHints> {
                     "  FROM o2p_column_hint h LEFT JOIN DBA_TAB_COLUMNS c\n" +
                     "    ON h.TABLE_OWNER = c.OWNER\n" +
                     "   AND h.TABLE_NAME = c.TABLE_NAME" +
-                    "   AND h.COLUMN_NAME = c.COLUMN_NAME";
+                    "   AND h.COLUMN_NAME = c.COLUMN_NAME" +
+                    " ORDER BY h.TABLE_OWNER, h.TABLE_NAME, h.COLUMN_NAME";
         } else if (dbType == DBType.POSTGRES) {
             throw new RuntimeException("For DBType = " + dbType.name() + " query is not defined!");
         } else {
