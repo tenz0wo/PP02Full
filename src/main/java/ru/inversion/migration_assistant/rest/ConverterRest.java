@@ -31,7 +31,9 @@ public class ConverterRest{
 
     @PostMapping(path = "migration/convert/ui")
     @ResponseBody
-    public ResponseEntity<?> getConvertUi(@RequestBody RequestParams[] request) throws Exception {
+    public ResponseEntity<?> getConvertUi(@RequestHeader HttpHeaders headers, @RequestBody RequestParams[] request) throws Exception {
+        System.out.println("headers");
+        System.out.println(headers);
         ResponseObj<List<TablesDto>> response = converterService.getConvertUi(request);
         return ResponseEntity.ok(response);
     }

@@ -1,16 +1,16 @@
 package ru.inversion.migration_assistant.exec.repo;
 
-        import ru.inversion.migration_assistant.db.DBType;
-        import ru.inversion.migration_assistant.exec.DBExecutor;
-        import ru.inversion.migration_assistant.exec.ExecutorConsumer;
-        import ru.inversion.migration_assistant.exec.ExecutorParams;
-        import ru.inversion.migration_assistant.model.common.DbConnectionParams;
-        import ru.inversion.migration_assistant.model.response.ColumnHints;
-        import ru.inversion.migration_assistant.model.response.ResponseColumnsHints;
+import ru.inversion.migration_assistant.db.DBType;
+import ru.inversion.migration_assistant.exec.DBExecutor;
+import ru.inversion.migration_assistant.exec.ExecutorConsumer;
+import ru.inversion.migration_assistant.exec.ExecutorParams;
+import ru.inversion.migration_assistant.model.common.DbConnectionParams;
+import ru.inversion.migration_assistant.model.response.ColumnHints;
+import ru.inversion.migration_assistant.model.response.ResponseColumnsHints;
 
-        import java.sql.ResultSet;
-        import java.util.LinkedList;
-        import java.util.List;
+import java.sql.ResultSet;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ColumnHintsExecutor extends DBExecutor<ResponseColumnsHints> {
     final DbConnectionParams params;
