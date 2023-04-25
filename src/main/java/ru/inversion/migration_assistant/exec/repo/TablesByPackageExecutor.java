@@ -93,7 +93,7 @@ public class TablesByPackageExecutor extends RequestParamsExecutor<List<DbObject
                 "       connect by nocycle prior myrel.t_main = myrel.t_child\n" +
                 "       ) IREL --\"глубина\" зависимостей в рамках выгружаемых для правильного порядка применения\n" +
                 "  from mytabs\n" +
-                " order by 2,1";
+                " order by 3,1";
     }
 
     void defineColumns() {
