@@ -58,7 +58,6 @@ public class CheckTableExecutor extends DBExecutor<ResponseCheckTable> {
         tableValues.setTableName (fixCase (params.getTable(), params.isSwitchTableCase()));
         tableValues.setSchemaName (fixCase (params.getSchema(), params.isSwitchSchemaCase()));
         tableValues.setTableNameForQuery (fixCaseWithDbType (params.getTable(), params.isSwitchTableCase()));
-
         if (dbType == DBType.ORACLE) {
             queryExists = "SELECT LEAST(COUNT(*),1)\n" +
                           "  FROM all_tables\n" +
@@ -90,7 +89,7 @@ public class CheckTableExecutor extends DBExecutor<ResponseCheckTable> {
 
     String fixCaseWithDbType(String str, boolean switchCase) {
         String retStr = fixCase(str, switchCase);
-        if (dbType == DBType.ORACLE && Objects.equals(str, str.toLowerCase()) || dbType == DBType.POSTGRES && Objects.equals(str, str.toUpperCase())) {
+        if (dbType == DBType.ORACLE && Objects.equals(retStr, retStr.toLowerCase()) || dbType == DBType.POSTGRES && Objects.equals(retStr, retStr.toUpperCase())) {
             retStr = "\"" + retStr + "\"";
         }
         return retStr;
