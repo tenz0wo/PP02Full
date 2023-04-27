@@ -10,4 +10,5 @@ public class TableDto {
     String ddlConPg;
     String ddlTabFdw;
     String script;
+    String rowidStat;
 }
