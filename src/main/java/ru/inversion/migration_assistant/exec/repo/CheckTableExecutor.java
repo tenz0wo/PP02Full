@@ -4,6 +4,7 @@ import ru.inversion.migration_assistant.db.DBType;
 import ru.inversion.migration_assistant.exec.DBExecutor;
 import ru.inversion.migration_assistant.exec.ExecutorConsumer;
 import ru.inversion.migration_assistant.exec.ExecutorParams;
+import ru.inversion.migration_assistant.model.operational.TableValues;
 import ru.inversion.migration_assistant.model.request.RequestCheckTable;
 import ru.inversion.migration_assistant.model.response.ResponseCheckTable;
 
@@ -53,21 +54,23 @@ public class CheckTableExecutor extends DBExecutor<ResponseCheckTable> {
     }
 
     void defineQueries () {
-        String table = fixCase (params.getTable(), params.isSwitchTableCase());
-        String schema = fixCase (params.getSchema(), params.isSwitchSchemaCase());
+        TableValues tableValues = new TableValues();
+        tableValues.setTableName (fixCase (params.getTable(), params.isSwitchTableCase()));
+        tableValues.setSchemaName (fixCase (params.getSchema(), params.isSwitchSchemaCase()));
+        tableValues.setTableNameForQuery (fixCaseWithDbType (params.getTable(), params.isSwitchTableCase()));
 
         if (dbType == DBType.ORACLE) {
             queryExists = "SELECT LEAST(COUNT(*),1)\n" +
                           "  FROM all_tables\n" +
-                          " WHERE owner = '" + schema + "'\n" +
-                          "   AND table_name = '" + table + "'";
+                          " WHERE owner = '" + tableValues.getSchemaName() + "'\n" +
+                          "   AND table_name = '" + tableValues.getTableName() + "'";
 
             queryNotEmpty = "SELECT LEAST(COUNT(*),1)\n" +
                             "  FROM DUAL\n" +
-                            " WHERE EXISTS (SELECT NULL FROM " + schema + "." + table + ")";
+                            " WHERE EXISTS (SELECT NULL FROM " + tableValues.getSchemaName() + "." + tableValues.getTableNameForQuery() + ")";
         } else if (dbType == DBType.POSTGRES) {
-            queryExists = "SELECT EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = '" + schema + "' AND tablename = '" + table + "') AS table_exists";
-            queryNotEmpty = "SELECT EXISTS (SELECT 1 FROM " + schema + "." + table + " LIMIT 1) AS table_not_empty";
+            queryExists = "SELECT EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = '" + tableValues.getSchemaName() + "' AND tablename = '" + tableValues.getTableName() + "') AS table_exists";
+            queryNotEmpty = "SELECT EXISTS (SELECT 1 FROM " + tableValues.getSchemaName() + "." + tableValues.getTableNameForQuery() + " LIMIT 1) AS table_not_empty";
         } else {
             throw new RuntimeException("For DBType = " + dbType.name() + " query is not defined!");
         }
@@ -83,6 +86,14 @@ public class CheckTableExecutor extends DBExecutor<ResponseCheckTable> {
         } else {
             return str;
         }
+    }
+
+    String fixCaseWithDbType(String str, boolean switchCase) {
+        String retStr = fixCase(str, switchCase);
+        if (dbType == DBType.ORACLE && Objects.equals(str, str.toLowerCase()) || dbType == DBType.POSTGRES && Objects.equals(str, str.toUpperCase())) {
+            retStr = "\"" + retStr + "\"";
+        }
+        return retStr;
     }
 
 }
