@@ -50,7 +50,7 @@ public class ExplainPlanExecutor extends DBExecutor<ResponseExplainPlan> {
                     responseExplainPlan.setJson(responseJson);
                 }
                 if (processingText) {
-                    response += resultSet.getString(1);
+                    response += resultSet.getString(1)+"\n";
                     responseExplainPlan.setPlain_text(response);
                 }
             }
