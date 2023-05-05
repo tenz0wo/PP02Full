@@ -113,7 +113,7 @@ public class ConverterRest{
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping(path = "migration/get-explain-table")
+    @PostMapping(path = "migration/explain-plan")
     @ResponseBody
     public ResponseEntity<?> getExplainTable(@RequestBody RequestExplainTable request) throws Exception {
         ResponseObj<?> response = converterService.getExplainTable(request);

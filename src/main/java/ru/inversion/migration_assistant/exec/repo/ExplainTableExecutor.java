@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 public class ExplainTableExecutor extends DBExecutor<ResponseExplainTable> {
     final RequestExplainTable params;
     String query;
+    String explainSubQuery;
 
     public ExplainTableExecutor(ExecutorParams<RequestExplainTable> params) {
         super(params);
@@ -38,12 +39,33 @@ public class ExplainTableExecutor extends DBExecutor<ResponseExplainTable> {
     }
 
     void defineQueries () {
+        this.createSubQuery();
         if (dbType == DBType.ORACLE) {
             throw new RuntimeException("For DBType = " + dbType.name() + " query is not defined!");
         } else if (dbType == DBType.POSTGRES) {
-            query = params.getQuery();
+            query = this.explainSubQuery + params.getQuery();
         } else {
             throw new RuntimeException("For DBType = " + dbType.name() + " query is not defined!");
         }
+    }
+
+    void createSubQuery(){
+        String paramsExplainSubQuery = "";
+        if (params.isAnalyze()){
+            paramsExplainSubQuery += ",ANALYZE";
+        }
+        if (params.isVerbose()){
+            paramsExplainSubQuery += ",VERBOSE";
+        }
+        if (params.isBuffers()){
+            paramsExplainSubQuery += ",BUFFERS";
+        }
+        if (params.isSettings()){
+            paramsExplainSubQuery += ",SETTINGS";
+        }
+        if (params.isWal()){
+            paramsExplainSubQuery += ",WAL";
+        }
+        explainSubQuery = "EXPLAIN (FORMAT JSON" + paramsExplainSubQuery + ") ";
     }
 }
