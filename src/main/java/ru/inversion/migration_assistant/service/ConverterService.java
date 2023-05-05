@@ -1,6 +1,5 @@
 package ru.inversion.migration_assistant.service;
 
-import io.swagger.v3.core.util.Json;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.inversion.migration_assistant.exec.ExecutorConsumer;
@@ -121,7 +120,7 @@ public class ConverterService {
         return sourceDBRepository.getTableColumns(params);
     }
 
-    public ResponseObj<ResponseExplainTable> getExplainTable(RequestExplainTable params) {
-        return targetDBRepository.getExplainTable(params);
+    public ResponseObj<ResponseExplainPlan> explainPlan(RequestExplainPlan params) {
+        return targetDBRepository.explainPlan(params);
     }
 }
