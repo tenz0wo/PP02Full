@@ -9,6 +9,8 @@ public class TableDto {
     String ddlTabPg;
     String ddlConPg;
     String ddlTabFdw;
+    String ddlIndPg;
     String script;
     String rowidStat;
+    String log;
 }

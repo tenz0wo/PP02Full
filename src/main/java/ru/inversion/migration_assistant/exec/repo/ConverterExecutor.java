@@ -59,8 +59,10 @@ public class ConverterExecutor extends RequestParamsExecutor<TablesDto> {
         table.setDdlTabPg(dcTable.e("ddl_tab_pg").asStr());
         table.setDdlConPg(dcTable.e("ddl_con_pg").asStr());
         table.setDdlTabFdw(dcTable.e("ddl_tab_fdw").asStr());
+        table.setDdlIndPg(dcTable.e("ddl_ind_pg").asStr());
         table.setRowidStat(dcTable.e("rowid_stat").asStr());
         table.setScript(dcTable.e("script").asStr());
+        table.setLog(dcTable.e("log").asStr());
         tables.setTable(table);
 
 //        Ежели всё-таки будет массив
