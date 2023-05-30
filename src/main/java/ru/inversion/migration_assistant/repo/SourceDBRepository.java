@@ -7,10 +7,7 @@ import ru.inversion.migration_assistant.exec.ExecutorParams;
 import ru.inversion.migration_assistant.exec.repo.*;
 import ru.inversion.migration_assistant.model.common.DbConnectionParams;
 import ru.inversion.migration_assistant.model.common.ResponseObj;
-import ru.inversion.migration_assistant.model.request.ColumnListParams;
-import ru.inversion.migration_assistant.model.request.RequestEditColumnHints;
-import ru.inversion.migration_assistant.model.request.RequestParams;
-import ru.inversion.migration_assistant.model.request.RequestTableColumn;
+import ru.inversion.migration_assistant.model.request.*;
 import ru.inversion.migration_assistant.model.response.*;
 import ru.inversion.migration_assistant.model.sql.ObjectPart;
 import ru.inversion.migration_assistant.model.sql.ObjectType;
@@ -60,5 +57,9 @@ public class SourceDBRepository {
 
     public ResponseObj<ResponseTableColumns> getTableColumns(RequestTableColumn params){
         return new DBExecHandler<>(TableColumnExecutor.class, new ExecutorParams<>(params)).exec();
+    }
+
+    public ResponseObj<ResponseDependencies> getDependencies(RequestDependencies params){
+        return new DBExecHandler<>(DependenciesExecutor.class, new ExecutorParams<>(params)).exec();
     }
 }

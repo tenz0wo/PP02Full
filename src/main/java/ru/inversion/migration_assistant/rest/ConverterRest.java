@@ -120,4 +120,11 @@ public class ConverterRest{
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping(path = "migration/get-dependencies")
+    @ResponseBody
+    public ResponseEntity<?> get_dependencies(@RequestBody RequestDependencies request) throws Exception {
+        ResponseObj<?> response = converterService.getDependencies(request);
+        return ResponseEntity.ok(response);
+    }
+
 }

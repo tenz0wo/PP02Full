@@ -123,4 +123,8 @@ public class ConverterService {
     public ResponseObj<ResponseExplainPlan> explainPlan(RequestExplainPlan params) {
         return targetDBRepository.explainPlan(params);
     }
+
+    public ResponseObj<ResponseDependencies> getDependencies(RequestDependencies params) {
+        return sourceDBRepository.getDependencies(params);
+    }
 }

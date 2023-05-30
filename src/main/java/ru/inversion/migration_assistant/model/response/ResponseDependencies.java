@@ -4,6 +4,6 @@ import lombok.Data;
 import springfox.documentation.spring.web.json.Json;
 
 @Data
-public class ResponseExplainTable {
-    Json response;
+public class ResponseDependencies {
+    Json data;
 }
