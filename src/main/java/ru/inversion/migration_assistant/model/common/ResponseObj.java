@@ -1,7 +1,6 @@
 package ru.inversion.migration_assistant.model.common;
 
 import lombok.Data;
-import ru.inversion.migration_assistant.model.request.RequestTableColumn;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
