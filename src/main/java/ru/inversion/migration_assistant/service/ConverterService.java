@@ -2,26 +2,22 @@ package ru.inversion.migration_assistant.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.inversion.migration_assistant.model.models.ControllerFolder;
-import ru.inversion.migration_assistant.model.models.Controllers;
-import ru.inversion.migration_assistant.repo.SourceDBRepository;
-import ru.inversion.migration_assistant.repo.TargetDBRepository;
+import ru.inversion.migration_assistant.model.common.ResponseObj;
+import ru.inversion.migration_assistant.model.models.ResponseControllers;
+import ru.inversion.migration_assistant.repo.DBRepository;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 
 
 @Service
 public class ConverterService {
 
-    protected final SourceDBRepository sourceDBRepository;
-    protected final TargetDBRepository targetDBRepository;
+    protected final DBRepository DBRepository;
 
     @Autowired
-    public ConverterService(SourceDBRepository sourceDBRepository, TargetDBRepository targetDBRepository) {
-        this.sourceDBRepository = sourceDBRepository;
-        this.targetDBRepository = targetDBRepository;
+    public ConverterService(DBRepository DBRepository) {
+        this.DBRepository = DBRepository;
     }
 
 
@@ -33,8 +29,12 @@ public class ConverterService {
 //        return sourceDBRepository.getDependencies(params);
 //    }
 
-    public Controllers getControllers(String params) throws IOException, SQLException {
+    public ResponseControllers getControllers(String params) throws IOException, SQLException {
         ControllerDBLinks controllerDBLinks = new ControllerDBLinks();
-        return controllerDBLinks.controllers;
+        return InsertOra2Pg(controllerDBLinks.responseControllers);
+    }
+
+    public ResponseControllers InsertOra2Pg(ResponseControllers controllers){
+        return DBRepository.insertOra2Pg(controllers).getResult();
     }
 }

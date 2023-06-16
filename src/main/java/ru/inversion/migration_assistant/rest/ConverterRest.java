@@ -5,8 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.inversion.migration_assistant.model.common.ResponseObj;
-import ru.inversion.migration_assistant.model.models.Controllers;
+import ru.inversion.migration_assistant.model.models.ResponseControllers;
 import ru.inversion.migration_assistant.service.ConverterService;
 
 
@@ -40,7 +39,7 @@ public class ConverterRest{
     @PostMapping(path = "controller-db/get-controller")
     @ResponseBody
     public ResponseEntity<?> getControllers(@RequestBody String request) throws Exception {
-        Controllers response = converterService.getControllers(request);
+        ResponseControllers response = converterService.getControllers(request);
         return ResponseEntity.ok(response);
     }
 

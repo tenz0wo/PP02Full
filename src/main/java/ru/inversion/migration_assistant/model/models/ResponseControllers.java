@@ -5,7 +5,6 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class ControllerFolder {
-    String folderPath;
-    List<Controller> controllers;
+public class ResponseControllers {
+    List <ControllerFolder> Folders;
 }

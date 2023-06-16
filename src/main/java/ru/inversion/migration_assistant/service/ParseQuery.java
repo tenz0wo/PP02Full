@@ -11,7 +11,7 @@ public class ParseQuery {
         String targetPattern = "@NamedNativeQuery";
         if (Files.exists(Paths.get(pathFile))) {
             try (BufferedReader br = new BufferedReader(new FileReader(pathFile))) {
-                return findQueryDefinition(br, targetPattern);
+                return cutQuery(findQueryDefinition(br, targetPattern));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -50,7 +50,15 @@ public class ParseQuery {
     }
 
     public String cutQuery(String query) {
-        String X = query.replaceAll("\\n", "").replaceAll("^.+query", "").replaceAll("^.+?\"", "").replaceAll("\".+?\"", "");
+        if (query == null){
+            return null;
+        }
+        query = query.trim();
+        String X = query.replaceAll("\\n", "")
+                        .replaceAll("^.+query", "")
+                        .replaceAll("^.+?\"", "")
+                        .replaceAll("\".+?\"", "")
+                        .replaceAll("\"\\)$", "");
         return X;
     }
 }
